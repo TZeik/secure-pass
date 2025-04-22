@@ -21,22 +21,22 @@ _Aplicación backend Secure Pass._
 ## 🤝 Cómo Contribuir
 
 • Clonar el repositorio: 
-   git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git
+   ```git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git```
 
 • Lista todas las ramas (locales y remotas):
-    git branch -a
+    ```git branch -a```
 
 • Crea una rama en tu repositorio local, y vincúlalo con la rama correspondiente en el repositorio remoto:
     En nuestro caso, por ejemplo:
-    git checkout -b feature/<topico> origin/feature/<topico>
+    ```git checkout -b feature/<topico> origin/feature/<topico>```
     Por ejemplo, si te toca la parte de QR-Generation:
-    git checkout -b feature/4-qr-generation origin/feature/4-qr-generation
+    ```git checkout -b feature/4-qr-generation origin/feature/4-qr-generation```
 
 • Verifica que estas en la rama correcta (Importante):
-    git branch # verifica la rama actual
-    git status # verifica el estado de los archivos en el repo
+    ```git branch``` # verifica la rama actual
+    ```git status``` # verifica el estado de los archivos en el repo
 
 • Finalmente, trabaja y sincroniza los cambios:
-    git add .   # añadir cambios
-    git commit -m "<mensaje>"   # commit
-    git push    # sube los cambios a la branch del repo remoto
+    ```git add .```   # añadir cambios
+    ```git commit -m "<mensaje>"```   # commit
+    ```git push```    # sube los cambios a la branch del repo remoto
