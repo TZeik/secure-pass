@@ -26,6 +26,11 @@ _Aplicación backend Secure Pass._
    
     $git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git
 
+• Instala las dependencias:
+
+    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode
+    $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode nodemon
+
 • Lista todas las ramas (locales y remotas):
     
     $git branch -a
