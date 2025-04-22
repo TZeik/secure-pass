@@ -22,14 +22,24 @@ _Aplicación backend Secure Pass._
 
 • Haz un Fork del proyecto en github
 
-• Clonar el repositorio: 
+• Clonar el repositorio forkeado: 
    
-    $git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git
+    $git clone https://github.com/tu-usuario/repositorio-forkeado.git
 
-• Instala las dependencias:
+• Ubicate en el directorio del repositorio forkeado:
+    $cd directorio-repositorio
 
+• Instala las dependencias dentro de la carpeta 'backend':
+
+    $cd backend
     $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode
     $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode nodemon
+    $cd ..  # vuelve al directorio anterior
+
+• Configura el repositorio original como 'upstream':
+
+    $git remote add upstream https://github.com/usuario-original/repositorio.git
+    $git remote -v  # verifica los git remotos
 
 • Crea una rama en tu repositorio local:
 
@@ -41,11 +51,13 @@ _Aplicación backend Secure Pass._
 
 • Verifica las ramas del repositorio local y remoto
 
-    $git branch --all # verifica todas las ramas (locales y remotas)
+    $git branch -a # verifica todas las ramas (locales y remotas)
     
     $git status # verifica el estado de los archivos en el repo
 
 • Sube tus cambios al repositorio remoto desde tu rama:
+
+    $git fetch upstream # Para sincronizar con el repositorio remoto original
 
     $git push origin feature/<tu rama>
 
