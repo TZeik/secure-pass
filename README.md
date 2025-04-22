@@ -24,13 +24,14 @@ _Aplicación backend Secure Pass._
 
 • Clonar el repositorio: 
    
-   `$git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git`
+    $git clone https://github.com/TZeik/SecurePass-Backend-BCSOFT1-25.git
 
 • Lista todas las ramas (locales y remotas):
     
     `$git branch -a`
 
 • Crea una rama en tu repositorio local:
+
     En nuestro caso, por ejemplo:
     
     `$git checkout -b feature/<tu rama>
