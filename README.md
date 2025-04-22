@@ -27,6 +27,7 @@ _Aplicación backend Secure Pass._
     $git clone https://github.com/tu-usuario/repositorio-forkeado.git
 
 • Ubicate en el directorio del repositorio forkeado:
+    
     $cd directorio-repositorio
 
 • Instala las dependencias dentro de la carpeta 'backend':
