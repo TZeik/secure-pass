@@ -28,36 +28,36 @@ _Aplicación backend Secure Pass._
 
 • Lista todas las ramas (locales y remotas):
     
-    `$git branch -a`
+    $git branch -a
 
 • Crea una rama en tu repositorio local:
 
     En nuestro caso, por ejemplo:
     
-    `$git checkout -b feature/<tu rama>
+    $git checkout -b feature/<tu rama>
 
     Recuerda utilizar los nombres sugeridos en nuestro grupo
 
 • Verifica las ramas del repositorio local y remoto
 
-    `$git branch --all` # verifica todas las ramas (locales y remotas)
+    $git branch --all # verifica todas las ramas (locales y remotas)
     
-    `$git status` # verifica el estado de los archivos en el repo
+    $git status # verifica el estado de los archivos en el repo
 
 • Sube tus cambios al repositorio remoto desde tu rama:
 
-    `$git push origin feature/<tu rama>`
+    $git push origin feature/<tu rama>
 
     O puedes hacer
 
-    `$git push -u origin feature/<tu rama>`
+    $git push -u origin feature/<tu rama>
 
     Para setear el upstream y simplemente realizar un `$git push` para los siguientes push
 
 • Finalmente, trabaja y sincroniza los cambios:
     
-    `$git add .`   # añadir cambios
+    $git add .   # añadir cambios
     
-    `$git commit -m "<mensaje>"`   # commit
+    $git commit -m "<mensaje>"   # commit
     
-    `$git push`    # sube los cambios a la branch del repo remoto
+    $git push    # sube los cambios a la branch del repo remoto
