@@ -27,13 +27,13 @@ async function runTests() {
   });
   console.log("Visita creada:", visit);
 
+  console.log("ID de Residente: ", resident._id);
+  console.log("ID de Visitante: ", visit._id);
+
   // consulta a las visitas del residente
   const visits = await Visit.find({ residente: resident._id });
   console.log("Visitas encontradas:", visits);
 
-  // eliminacion de datos de prueba
-  await User.deleteMany({ email: "juan@example.com" });
-  await Visit.deleteMany({ qrId: "qr-unique-id-123" });
 
   await mongoose.connection.close();
 }
