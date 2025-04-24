@@ -2,16 +2,20 @@ import { User } from "../models/User";
 import { Visit } from "../models/Visit";
 import mongoose from "mongoose";
 import { env } from "../config/env";
+import { Vehicle } from "../models/Vehicle";
 
-async function runTests() {
+async function deleteDataTests() {
   await mongoose.connect(env.MONGODB_URI);
 
   // eliminacion de datos de prueba
-  await User.deleteMany({ email: "juan@example.com" });
-  await Visit.deleteMany({ qrId: "qr-unique-id-123" });
+  await User.deleteMany({});
+  await Visit.deleteMany({});
+  await Vehicle.deleteMany({});
+
+  console.log("¡Se han eliminado los sujetos de prueba!");
 
   await mongoose.connection.close();
 
 }
 
-runTests().catch(console.error);
+deleteDataTests().catch(console.error);
