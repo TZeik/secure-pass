@@ -10,7 +10,7 @@ async function runTests() {
   const resident = await User.create({
     nombre: "Juan Pérez",
     email: "juan@example.com",
-    password: "password",
+    password: "password123",
     role: "residente",
     apartamento: "101",
     torre: "A",
@@ -23,7 +23,7 @@ async function runTests() {
     nombreVisitante: "María García",
     documentoVisitante: "V-12345678",
     motivo: "Entrega de paquete",
-    qrId: "qr-unique-id-123",
+    qrId: "qr-123456",
   });
   console.log("Visita creada:", visit);
 
