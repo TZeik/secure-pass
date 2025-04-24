@@ -5,13 +5,16 @@ export enum UserRole {
   GUARDIA = 'guardia',
 }
 
-export interface IUser extends Document {
+export interface IUserInput {
   nombre: string;
   email: string;
   password: string;
   role: UserRole;
   apartamento?: string;
   torre?: string;
+}
+
+export interface IUser extends IUserInput, Document {
   fechaRegistro: Date;
-  comparePassword(password: string): Promise<boolean>;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }

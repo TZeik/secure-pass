@@ -1,13 +1,16 @@
 import { Document } from 'mongoose';
 
-export interface IVisit extends Document {
+export interface IVisitInput {
   residente: string;
   nombreVisitante: string;
   documentoVisitante: string;
-  fechaAutorizacion: Date;
   fechaEntrada?: Date;
   fechaSalida?: Date;
   qrId?: string;
-  estado: 'autorizado' | 'procesando' | 'finalizado';
   motivo: string;
+}
+
+export interface IVisit extends IVisitInput, Document {
+  fechaAutorizacion: Date;
+  estado: 'autorizado' | 'procesando' | 'finalizado';
 }
