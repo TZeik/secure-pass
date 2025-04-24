@@ -6,11 +6,20 @@ const vehicleSchema = new Schema<IVehicle>({
     type: String,
     ref: "User",
     required: true,
+    validate: {
+      validator: async (id: string) => {
+        const user = await model('User').findById(id);
+        return user?.role === 'residente';
+      },
+      message: 'El residente no existe o no tiene el rol correcto'
+    }
   },
   placa: {
     type: String,
     required: true,
     unique: true,
+    uppercase: true,
+    match: [/^[A-Z]{3}-\d{3}$/, 'Formato de placa inválido (ABC-123)']
   },
   marca: {
     type: String,
