@@ -19,7 +19,7 @@ const vehicleSchema = new Schema<IVehicle>({
     required: true,
     unique: true,
     uppercase: true,
-    match: [/^[A-Z]{3}-\d{3}$/, 'Formato de placa inválido (ABC-123)']
+    match: [/^[A-Z]{1}-\d{6}$/, 'Formato de placa inválido (A-123456)']
   },
   marca: {
     type: String,

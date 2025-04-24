@@ -50,9 +50,7 @@ userSchema.pre<IUser>("save", async function (next) {
 });
 
 // comparacion de contraseñas
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
