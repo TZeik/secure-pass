@@ -1,6 +1,7 @@
 import { User } from '../models/User';
 import mongoose from 'mongoose';
 import { env } from '../config/env';
+import { UserRole } from '../interfaces/IUser';
 
 async function runUserTests() {
   await mongoose.connect(env.MONGODB_URI);
@@ -10,7 +11,7 @@ async function runUserTests() {
     nombre: 'Randy Germosén',
     email: 'randy@me.com',
     password: 'password123',
-    role: 'residente',
+    role: UserRole.RESIDENTE,
     apartamento: '201',
     torre: 'B'
   });

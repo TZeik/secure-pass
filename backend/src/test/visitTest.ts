@@ -2,6 +2,7 @@ import { User } from '../models/User';
 import { Visit } from '../models/Visit';
 import mongoose from 'mongoose';
 import { env } from '../config/env';
+import { UserRole } from '../interfaces/IUser';
 
 async function runVisitTests() {
   await mongoose.connect(env.MONGODB_URI);
@@ -11,7 +12,7 @@ async function runVisitTests() {
     nombre: 'Carlos López',
     email: 'carlos@example.com',
     password: 'password123',
-    role: 'residente',
+    role: UserRole.RESIDENTE,
     apartamento: '301',
     torre: 'C'
   });
