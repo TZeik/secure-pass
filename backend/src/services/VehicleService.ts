@@ -1,8 +1,6 @@
-// src/services/VehicleService.ts
 import { Vehicle } from "../models/Vehicle";
 import { IVehicle, IVehicleInput } from "../interfaces/IVehicle";
 import { Types } from "mongoose";
-import { UserService } from "./UserService";
 
 export class VehicleService {
   // Registra un vehiculo para un residente
