@@ -33,7 +33,7 @@ _Aplicación backend Secure Pass._
 • Instala las dependencias dentro de la carpeta 'backend':
 
     $cd backend
-    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode jest
+    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode jest ts-jest
     $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode @types/jest nodemon
     $cd ..  # vuelve al directorio anterior
 
@@ -97,7 +97,7 @@ _Aplicación backend Secure Pass._
 
 • Primero *Trae los cambios desde el repositorio original*.
    
-    _Realiza los pasos del acápite anterior_
+    Realiza los pasos del acápite anterior
 
 • Ubicate en tu rama feature y actualiza
 
