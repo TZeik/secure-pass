@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 export enum UserRole {
   RESIDENTE = 'residente',
   GUARDIA = 'guardia',
+  ADMIN = 'admin',
 }
 
 export interface IUserInput {
