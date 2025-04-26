@@ -33,8 +33,8 @@ _Aplicación backend Secure Pass._
 • Instala las dependencias dentro de la carpeta 'backend':
 
     $cd backend
-    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode
-    $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode nodemon
+    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode jest
+    $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode @types/jest nodemon
     $cd ..  # vuelve al directorio anterior
 
 • Configura el repositorio original como 'upstream':
