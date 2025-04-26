@@ -3,7 +3,7 @@ import { IVehicle, IVehicleInput } from "../interfaces/IVehicle";
 import { Types } from "mongoose";
 
 export class VehicleService {
-  // Registra un vehiculo para un residente
+  // Registra un vehiculo para un propietario
   static async registerVehicle(vehicleData: IVehicleInput): Promise<IVehicle> {
     // Validacion del formato de placa
 
@@ -17,11 +17,9 @@ export class VehicleService {
     return await Vehicle.create(vehicleData);
   }
 
-  // Obtiene los vehiculos por residente
-  static async getVehiclesByResident(
-    residentId: string | Types.ObjectId
-  ): Promise<IVehicle[]> {
-    return await Vehicle.find({ residente: residentId }).sort({
+  // Obtiene los vehiculos por ID
+  static async getVehiclesById(ownerId: string | Types.ObjectId): Promise<IVehicle[]> {
+    return await Vehicle.find({ propietario: ownerId }).sort({
       fechaRegistro: -1,
     });
   }
