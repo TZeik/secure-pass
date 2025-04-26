@@ -1,9 +1,7 @@
-import { VehicleService } from "../services/VehicleService";
-import { Vehicle } from "../models/Vehicle";
-import { User } from "../models/User";
-import mongoose from "mongoose";
-import { env } from "../config/env";
-import { UserRole } from "../interfaces/IUser";
+import { VehicleService } from "../../src/services/VehicleService";
+import { Vehicle } from "../../src/models/Vehicle";
+import { User } from "../../src/models/User";
+import { UserRole } from "../../src/interfaces/IUser";
 
 describe("VehicleService", () => {
   let residentId: string;
