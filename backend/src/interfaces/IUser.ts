@@ -11,6 +11,7 @@ export interface IUserInput {
   email: string;
   password: string;
   role: UserRole;
+  imagenUrl?: string; // URL de Cloudinary
   apartamento?: string;
   torre?: string;
 }
