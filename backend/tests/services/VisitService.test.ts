@@ -1,10 +1,11 @@
 import { VisitService } from "../../src/services/VisitService";
 import { UserRole } from "../../src/interfaces/IUser";
 import { UserService } from "../../src/services/UserService";
+import { Types } from "mongoose";
 
 describe("VisitService", () => {
-  let residentId: string;
-  let guardiaId: string;
+  let residentId: Types.ObjectId;
+  let guardiaId: Types.ObjectId;
 
   it("Crear visita", async () => {
 
@@ -18,7 +19,7 @@ describe("VisitService", () => {
       torre: "A",
     });
 
-    residentId = resident.id.toString();
+    residentId = resident._id as Types.ObjectId;
 
     // Usuario guardia de prueba
     const guardia = await UserService.createUser({
@@ -28,7 +29,7 @@ describe("VisitService", () => {
       role: UserRole.GUARDIA,
     });
 
-    guardiaId = guardia.id.toString();
+    guardiaId = guardia._id as Types.ObjectId;
 
     const visit = await VisitService.createVisit({
       residente: residentId,

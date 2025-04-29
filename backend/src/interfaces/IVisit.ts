@@ -1,8 +1,8 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface IVisitInput {
-  residente: string;
-  guardia: string;
+  residente: Types.ObjectId;
+  guardia: Types.ObjectId;
   nombreVisitante: string;
   documentoVisitante: string;
   imagenUrl?: string; // URL de Cloudinary
