@@ -1,14 +1,14 @@
 import { VehicleService } from "../../src/services/VehicleService";
 import { Vehicle } from "../../src/models/Vehicle";
-import { User } from "../../src/models/User";
 import { UserRole } from "../../src/interfaces/IUser";
 import { VisitService } from "../../src/services/VisitService";
 import { UserService } from "../../src/services/UserService";
+import { Types } from "mongoose";
 
 describe("VehicleService", () => {
-  let residentId: string;
-  let guardiaId: string;
-  let visitId: string;
+  let residentId: Types.ObjectId;
+  let guardiaId: Types.ObjectId;
+  let visitId: Types.ObjectId;
 
   it("Registro de un vehículo para residente", async () => {
     // Usuario residente de prueba
@@ -21,7 +21,7 @@ describe("VehicleService", () => {
       torre: "B",
     });
 
-    residentId = resident.id.toString();
+    residentId = resident._id as Types.ObjectId;
 
     // Usuario guardia de prueba
     const guardia = await UserService.createUser({
@@ -31,7 +31,7 @@ describe("VehicleService", () => {
       role: UserRole.GUARDIA,
     });
 
-    guardiaId = guardia.id.toString();
+    guardiaId = guardia._id as Types.ObjectId;
 
     const vehicle = await VehicleService.registerVehicle({
       propietario: residentId,
@@ -43,7 +43,7 @@ describe("VehicleService", () => {
 
     expect(vehicle._id).toBeDefined();
     expect(vehicle.placa).toBe("A-345678");
-    expect(vehicle.propietario.toString()).toBe(residentId);
+    expect(vehicle.propietario).toBe(residentId);
   });
 
   it("Registro de un vehículo para visita", async () => {
@@ -55,7 +55,7 @@ describe("VehicleService", () => {
       motivo: "Pasadia familiar",
     });
 
-    visitId = visit.id.toString();
+    visitId = visit._id as Types.ObjectId;
 
     const vehicle = await VehicleService.registerVehicle({
       propietario: visitId,
@@ -67,7 +67,7 @@ describe("VehicleService", () => {
 
     expect(vehicle._id).toBeDefined();
     expect(vehicle.placa).toBe("G-258014");
-    expect(vehicle.propietario.toString()).toBe(visitId);
+    expect(vehicle.propietario).toBe(visitId);
   });
 
   it("Verificación de formato de placa", async () => {

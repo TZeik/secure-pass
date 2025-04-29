@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { JwtPayload } from "../interfaces/IToken";
+
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   console.log("Headers:", req.headers);
@@ -25,7 +25,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
   }
 
   try {
-    const decoded = jwt.verify(token, secretKey) as JwtPayload;
+    const decoded = jwt.verify(token, secretKey)
     console.log("Token decodificado:", decoded);
     res.locals.user = decoded;
     next();
