@@ -49,3 +49,4 @@ const visitSchema: Schema = new mongoose.Schema({
 });
 
 export const Visit: Model<IVisit> = mongoose.model<IVisit>('Visit', visitSchema);
+export default Visit;
