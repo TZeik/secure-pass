@@ -22,13 +22,13 @@ router.post("/visit/entrada", registerEntry);
 // Registrar salida de visitas
 
 /*
- @route PUT /visit/salida/:qrId  <-- Se sustituye por el qrId generado en la entrada
+ @route PUT /visit/salida:qrId  <-- Se sustituye por el qrId generado en la entrada
  {
  "motivo": "<Motivo de salida>",
  "guardia": "<ID Guardia>",
  }
 */
 
-router.put("/visit/salida/:qrId", registerExit);
+router.put("/visit/salida:qrId", registerExit);
 
 export default router;
