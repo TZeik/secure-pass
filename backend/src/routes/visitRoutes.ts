@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {getVisit} from "../controllers/RepController";
+import {getVisit} from "../controllers/repController";
 //import {roleMiddleware} from "../middlewares/roleMiddleware";
 
 const Vroutes= Router();
