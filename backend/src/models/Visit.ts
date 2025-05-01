@@ -48,5 +48,14 @@ const visitSchema: Schema = new mongoose.Schema({
   }
 });
 
+visitSchema.index({ qrId: 1 }, { unique: true });
+visitSchema.index({ documentoVisitante: 1 });
+visitSchema.index({ fechaEntrada: 1 });
+visitSchema.index({ estado: 1 });
+
+visitSchema.path('documentoVisitante').validate(function (value: string) {
+    return value && value.length >= 5;
+}, 'El documento debe tener al menos 5 caracteres');
+
 export const Visit: Model<IVisit> = mongoose.model<IVisit>('Visit', visitSchema);
 export default Visit;
