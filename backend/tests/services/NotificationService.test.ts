@@ -140,7 +140,7 @@ describe("NotificationService", () => {
     )) as IVisit;
 
     const entryData = {
-      to: "alexgermosen@gmail.com",
+      to: process.env.EMAIL_USER as string,
       visitData: {
         nombreVisitante: updatedVisit.nombreVisitante,
         documento: updatedVisit.documentoVisitante,
