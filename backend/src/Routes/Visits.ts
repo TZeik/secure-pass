@@ -3,7 +3,7 @@ import { getVisit } from "../controllers/RepController";
 
 const router= Router();
 
-router.get('/visitas', getVisit);
+router.get('api/visit', getVisit);
 
 
 export default router;
