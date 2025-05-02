@@ -3,7 +3,7 @@ import { Visit } from "../models/Visit";
 import mongoose  from "mongoose";
 import { Console } from "console";
 
-export const getVisit = async (req: Request, res: Response) => {
+export const getVisit = async (req: Request, res: Response) : Promise<void> => {
     try{
         const {Fdesde, Fhasta,Nresidente, Pvehiculo,Vestado } = req.query;
         const filtro={} as any;
@@ -23,24 +23,19 @@ export const getVisit = async (req: Request, res: Response) => {
 
             }
 
-        if (Pvehiculo){
-            filtro.estado= Vestado as string;
-    
-            }
-
-            const viewVisitas= await Visit.find(filtro).populate("Resident").populate("Guardia").populate("Vehiculo").sort({ fechaEntrada: -1 }).exec();
+            const viewVisitas= await Visit.find(filtro).populate("residente").populate("Guardia").populate("Vehiculo").sort({ fechaEntrada: -1 }).exec();
 
             if (viewVisitas.length === 0) {
-                return res.status(404).json({ message: "No se encontraron visitas." });
+                res.status(404).json({ message: "No se encontraron visitas." });
+                return;
             }
 
          }
          catch (err)
          {
             console.error("Error en la consulta", err);
-            res.status(500).json({message: "Error en la consulta"})
-        return res.status(500).json({ message: "Error en la consulta" });
-
+            res.status(500).json({message: "Error en la consulta"});
+            return
          };
 
 };

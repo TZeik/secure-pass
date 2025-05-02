@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {getVisit} from "../controllers/RepController";
-//import {roleMiddleware} from "../middlewares/roleMiddleware";
+import { getVisit } from "../controllers/RepController";
 
-const Vroutes= Router();
+const router= Router();
 
-//Vroutes.get("/visitas", getVisit);
+router.get('/visitas', getVisit);
 
-export default Vroutes;
+
+export default router;
