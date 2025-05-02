@@ -76,7 +76,7 @@ describe("NotificationService", () => {
     )) as IVisit;
 
     const entryData = {
-      to: "alexgermosen@gmail.com",
+      to: process.env.EMAIL_USER as string,
       visitData: {
         nombreVisitante: updatedVisit.nombreVisitante,
         documento: updatedVisit.documentoVisitante,
@@ -128,7 +128,7 @@ describe("NotificationService", () => {
     guardiaId = guardia._id as Types.ObjectId;
 
     const visit = await VisitService.createVisit({
-      residente: residentId,
+      residente: residentId,    
       guardia: guardiaId,
       nombreVisitante: "Rafael Tejada",
       documentoVisitante: "V-12345678",
