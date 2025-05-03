@@ -1,7 +1,12 @@
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
+
+export enum OwnerType {
+  RESIDENTE = 'residente',
+  VISITA = 'visitante',
+}
 
 export interface IVehicleInput{
-  residente: string;
+  propietario: Types.ObjectId;
   placa: string;
   marca: string;
   modelo: string;

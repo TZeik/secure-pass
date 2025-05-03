@@ -1,12 +1,14 @@
-// src/tests/visitService.test.ts
-import { VisitService } from "../services/VisitService";
-import { UserRole } from "../interfaces/IUser";
-import { UserService } from "../services/UserService";
+import { VisitService } from "../../src/services/VisitService";
+import { UserRole } from "../../src/interfaces/IUser";
+import { UserService } from "../../src/services/UserService";
+import { Types } from "mongoose";
 
 describe("VisitService", () => {
-  let residentId: string;
+  let residentId: Types.ObjectId;
+  let guardiaId: Types.ObjectId;
 
   it("Crear visita", async () => {
+
     // Usuario residente de prueba
     const resident = await UserService.createUser({
       nombre: "Gauris Javier",
@@ -17,10 +19,21 @@ describe("VisitService", () => {
       torre: "A",
     });
 
-    residentId = resident.id.toString();
+    residentId = resident._id as Types.ObjectId;
+
+    // Usuario guardia de prueba
+    const guardia = await UserService.createUser({
+      nombre: "Ernesto Papotico",
+      email: "ernesto@example.com",
+      password: "password123",
+      role: UserRole.GUARDIA,
+    });
+
+    guardiaId = guardia._id as Types.ObjectId;
 
     const visit = await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Rafael Tejada",
       documentoVisitante: "V-12345678",
       motivo: "Entrega de paquete",
@@ -34,6 +47,7 @@ describe("VisitService", () => {
   it("Registrar entrada", async () => {
     const visit = await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Manuel Domínguez",
       documentoVisitante: "V-87654321",
       motivo: "Reunión",
@@ -48,6 +62,7 @@ describe("VisitService", () => {
   it("Consultar visitas por residente", async () => {
     await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Pedro Pascal",
       documentoVisitante: "V-11111111",
       motivo: "Visita familiar",
