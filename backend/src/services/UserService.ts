@@ -23,7 +23,14 @@ export class UserService {
     return await User.findById(id).exec();
   }
 
-  static async updateUser(id: string | Types.ObjectId, updateData: Partial<Omit<IUser, "_id" | "password" | "comparePassword">>): Promise<IUser | null> {
+  static async getUsersByRole(role: UserRole): Promise<IUser[]> {
+    return await User.find({ role }).select('-password').exec();
+  }
+
+  static async updateUser(
+    id: string | Types.ObjectId,
+    updateData: Partial<Omit<IUser, "_id" | "password" | "comparePassword">>
+  ): Promise<IUser | null> {
     if (
       updateData.role === UserRole.RESIDENTE &&
       (!updateData.apartamento || !updateData.torre)
@@ -38,7 +45,10 @@ export class UserService {
     await User.findByIdAndDelete(id).exec();
   }
 
-  static async comparePasswords(userId: string | Types.ObjectId, candidatePassword: string): Promise<boolean> {
+  static async comparePasswords(
+    userId: string | Types.ObjectId,
+    candidatePassword: string
+  ): Promise<boolean> {
     const user = await User.findById(userId).select("+password").exec();
     if (!user) throw new Error("Usuario no encontrado");
     return await user.comparePassword(candidatePassword);

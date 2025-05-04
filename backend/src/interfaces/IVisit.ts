@@ -13,6 +13,7 @@ export interface IVisitInput {
 }
 
 export interface IVisit extends IVisitInput, Document {
+  _id: Types.ObjectId;
   fechaAutorizacion: Date;
   estado: 'autorizado' | 'procesando' | 'finalizado';
 }

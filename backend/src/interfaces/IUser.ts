@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export enum UserRole {
   RESIDENTE = 'residente',
@@ -17,6 +17,7 @@ export interface IUserInput {
 }
 
 export interface IUser extends IUserInput, Document {
+  _id: Types.ObjectId;
   fechaRegistro: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }

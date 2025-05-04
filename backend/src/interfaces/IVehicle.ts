@@ -15,5 +15,6 @@ export interface IVehicleInput{
 }
 
 export interface IVehicle extends IVehicleInput, Document{
+  _id: Types.ObjectId;
   fechaRegistro: Date;
 }
