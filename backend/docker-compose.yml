@@ -21,7 +21,7 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=5000
-      - MONGODB_URI=${MONGODB_URI_R}
+      - MONGODB_URI=${MONGODB_URI}
     volumes:
       - ./src:/app/src
     depends_on:
