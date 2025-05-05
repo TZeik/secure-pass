@@ -7,6 +7,6 @@ const router = Router();
 // Ruta para generar un código QR
 // POST /api/qr/generar
 
-router.post('/generar', authMiddleware, generarQR);
+router.post('/qr/generate', authMiddleware, generarQR);
 
 export default router;
