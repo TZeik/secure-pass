@@ -1,9 +1,8 @@
-import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import 'dotenv/config'
+import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { IUser, IUserInput, UserRole } from "../interfaces/IUser";
-
-const jwtSecret = process.env.JWT_SECRET || '';
 
 interface AuthenticatedRequest extends Request {
   user?: IUser;
@@ -79,7 +78,7 @@ export const authController = {
           role: user.role,
           email: user.email
         }, 
-        jwtSecret,
+        `${process.env.JWT_SECRET}`,
         { expiresIn: "1h" }
       );
 

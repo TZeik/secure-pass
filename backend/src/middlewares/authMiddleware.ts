@@ -12,13 +12,11 @@ interface AuthenticatedRequest extends Request {
   user?: IUser;
 }
 
-const jwtSecret = process.env.JWT_SECRET || '';
-
 export const authMiddleware = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): Promise<void> => {  // Asegúrate de retornar Promise<void>
+): Promise<void> => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
@@ -27,7 +25,7 @@ export const authMiddleware = async (
       return;
     }
 
-    const decoded = jwt.verify(token, jwtSecret) as { id: string };
+    const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`) as { id: string };
     const user = await UserService.findById(decoded.id);
 
     if (!user) {

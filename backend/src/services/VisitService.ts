@@ -11,6 +11,7 @@ export class VisitService {
     return await Visit.create({
       ...visitData,
       qrId: this.generateQRId(),
+      fechaEntrada: new Date(),
       estado: "autorizado",
     });
   }
@@ -35,15 +36,18 @@ export class VisitService {
     );
   }
 
-  // Registra una entrada
+  // Registra una salida
 
-  static async registerEntry(
-    visitId: string | Types.ObjectId
+  static async registerExit(
+    qrId: string
   ): Promise<IVisit | null> {
+
+    const visit = await this.getVisitByQR(qrId) as IVisit;
+
     return await Visit.findByIdAndUpdate(
-      visitId,
+      visit._id,
       {
-        fechaEntrada: new Date(),
+        fechaSalida: new Date(),
         estado: "procesando",
       },
       { new: true }

@@ -25,7 +25,7 @@ export const registerExit = async (
 ): Promise<void> => {
   try {
     const { qrId } = req.params;
-    const visit = await VisitService.registerEntry(qrId);
+    const visit = await VisitService.registerExit(qrId);
     if (!visit) {
       res.status(404).json({ message: "Visita no encontrada" });
       return;
