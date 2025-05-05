@@ -4,15 +4,15 @@ import QRCode from 'qrcode';
 // Controlador para generar un código QR
 export const generarQR: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { idVisita } = req.body;
+    const { id } = req.params;
 
-    if (!idVisita) {
+    if (!id) {
       res.status(400).json({ mensaje: 'El idVisita es requerido' });
       return;
     }
 
     const qrData = {
-      id: idVisita,
+      id: id,
       expiracion: Date.now() + 3600000, // 1 hora en milisegundos
     };
 
