@@ -6,7 +6,9 @@ import { UserService } from "./UserService";
 export class VisitService {
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
     const resident = await UserService.findById(visitData.residente);
+    const guard = await UserService.findById(visitData.guardia);
     if (!resident) throw new Error("Residente no encontrado");
+    if(!guard) throw new Error('Guardia no encontrado');
 
     return await Visit.create({
       ...visitData,
@@ -20,7 +22,7 @@ export class VisitService {
 
   static async updateVisit(
     visitId: string | Types.ObjectId,
-    updateData: Partial<IVisitInput>
+    updateData: Partial<IVisitInput> | Partial<IVisit>
   ): Promise<IVisit | null> {
     if (updateData.guardia) {
       const guardia = await UserService.findById(updateData.guardia);

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { VisitService } from "../services/VisitService";
-import { IVisitInput } from "../interfaces/IVisit";
+import { IVisit, IVisitInput } from "../interfaces/IVisit";
 import Visit from "../models/Visit";
 
 export const registerEntry = async (
@@ -102,9 +102,10 @@ export const updateVisitStatus = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const visitData: IVisitInput = req.body;
-    
-    const updatedVisit = await VisitService.updateVisit(id, visitData);
+    const { estado } = req.query;
+
+    const updateData = {estado: estado?.toString() };
+    const updatedVisit = await VisitService.updateVisit(id, updateData as Partial<IVisit>);
     
     if (!updatedVisit) {
       res.status(404).json({ message: "Visita no encontrada" });
