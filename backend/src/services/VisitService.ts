@@ -70,11 +70,31 @@ export class VisitService {
       .populate("residente", "nombre apartamento");
   }
 
-  private static generateQRId(): string {
-    return `qr-${Math.random().toString(36).substring(2, 10)}-${Date.now()}`;
-  }
-
   static async deleteVisit(visitId: string | Types.ObjectId): Promise<void> {
     await Visit.findByIdAndDelete(visitId);
   }
+
+  static async getAllVisits(): Promise<IVisit[]> {
+    return await Visit.find()
+      .populate("residente", "nombre apartamento")
+      .populate("guardia", "nombre")
+      .sort({ fechaAutorizacion: -1 });
+  }
+  
+  static async getVisitById(visitId: string | Types.ObjectId): Promise<IVisit | null> {
+    return await Visit.findById(visitId)
+      .populate("residente", "nombre apartamento")
+      .populate("guardia", "nombre");
+  }
+  
+  static async getVisitByQR(qrId: string): Promise<IVisit | null> {
+    return await Visit.findOne({ qrId })
+      .populate("residente", "nombre apartamento")
+      .populate("guardia", "nombre");
+  }
+
+  private static generateQRId(): string {
+    return `qr-${Math.random().toString(36).substring(2, 10)}-${Date.now()}`;
+  }
+  
 }

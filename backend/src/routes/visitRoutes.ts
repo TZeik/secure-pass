@@ -1,11 +1,39 @@
 import { Router } from "express";
-import {getVisit} from "../controllers/repController";
+import { 
+  registerEntry,
+  registerExit,
+  getAllVisits,
+  getVisitById,
+  getVisitByQR,
+  updateVisitStatus,
+  updateVisit,
+  deleteVisit,
+  getVisitsByResident,
+  getVisitsByGuard
+} from "../controllers/visitController";
+import { getVisitReport } from "../controllers/repController";
 
+const router = Router();
 
+// Registro de visitas
+router.post('/visits/entry', registerEntry);
+router.put('/visits/exit/:qrId', registerExit);
 
-const router= Router();
+// Consultas de visitas
+router.get('/visits', getAllVisits);
+router.get('/visits/:id', getVisitById);
+router.get('/visits/qr/:qrId', getVisitByQR);
+router.get('/visits/resident/:residenteId', getVisitsByResident);
+router.get('/visits/guard/:guardId', getVisitsByGuard);
 
-router.get('api/visit', getVisit);
+// Ruta para reportes de visitas
+router.get('/visits/report', getVisitReport);
 
+// Actualización de visitas
+router.patch('/visits/:id/status', updateVisitStatus);
+router.put('/visits/:id', updateVisit);
+
+// Eliminación de visitas
+router.delete('/visits/:id', deleteVisit);
 
 export default router;
