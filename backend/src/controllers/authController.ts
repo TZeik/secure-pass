@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { UserService } from "../services/UserService";
-import { IUserInput, UserRole } from "../interfaces/IUser";
+import { IUser, IUserInput, UserRole } from "../interfaces/IUser";
 
 const jwtSecret = process.env.JWT_SECRET || '';
 
+interface AuthenticatedRequest extends Request {
+  user?: IUser;
+}
+
 export const authController = {
-  async registerUser(req: Request, res: Response): Promise<void> {
+  async registerUser(req: AuthenticatedRequest, res: Response): Promise<void> {
     const { nombre, email, password, role, apartamento, torre, imagenUrl } = req.body;
 
     try {
@@ -53,7 +57,7 @@ export const authController = {
     }
   },
 
-  async loginUser(req: Request, res: Response): Promise<void> {
+  async loginUser(req: AuthenticatedRequest, res: Response): Promise<void> {
     const { email, password } = req.body;
 
     try {
@@ -99,7 +103,7 @@ export const authController = {
     }
   },
 
-  async getCurrentUser(req: Request, res: Response): Promise<void> {
+  async getCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
         res.status(404).json({ error: "Usuario no encontrado" });

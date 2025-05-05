@@ -1,35 +1,52 @@
-// src/middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/UserService';
+import { IUser } from '../interfaces/IUser';
+
+// payload del token
+interface JwtPayload {
+  id: string;
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: IUser;
+}
 
 const jwtSecret = process.env.JWT_SECRET || '';
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {  // Asegúrate de retornar Promise<void>
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      throw new Error('Autenticación requerida');
+      res.status(401).json({ error: 'Autenticación requerida' });
+      return;
     }
 
     const decoded = jwt.verify(token, jwtSecret) as { id: string };
     const user = await UserService.findById(decoded.id);
 
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      res.status(401).json({ error: 'Usuario no encontrado' });
+      return;
     }
 
     req.user = user;
     next();
-  } catch (error: any) {
-    res.status(401).json({ error: error.message || 'Autenticación fallida' });
+  } catch (error) {
+    res.status(401).json({ error: 'Autenticación fallida' });
   }
 };
 
 export const roleMiddleware = (requiredRoles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user || !requiredRoles.includes(req.user.role)) {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const user = req.user;
+    
+    if (!user || !requiredRoles.includes(user.role)) {
       return res.status(403).json({ error: 'Acceso no autorizado' });
     }
     
