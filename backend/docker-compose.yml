@@ -1,13 +1,19 @@
 services:
   mongodb:
-    image: mongo:7.0
+    image: mongo
     container_name: mongodb_securepass
+    command: mongod --bind_ip_all
     ports:
-      - "27017:27017"
+      - "0.0.0.0:27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    healthcheck:
+      test: mongosh --eval "db.adminCommand('ping')" -u admin -p admin --authenticationDatabase admin
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - mongodb_data:/data/db
     networks:
