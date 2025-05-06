@@ -33,8 +33,7 @@ _Aplicación backend Secure Pass._
 • Instala las dependencias dentro de la carpeta 'backend':
 
     $cd backend
-    $npm install express mongoose dotenv cors bcryptjs jsonwebtoken qrcode jest ts-jest uuid nodemailer
-    $npm install --save-dev @types/express @types/mongoose @types/cors @types/bcryptjs @types/jsonwebtoken @types/qrcode @types/jest @types/uuid @types/nodemailer nodemon 
+    $npm install # Instalar dependencias configuradas en el package.json
     $cd ..  # vuelve al directorio anterior
 
 • Configura el repositorio original como 'upstream':
@@ -46,9 +45,10 @@ _Aplicación backend Secure Pass._
 
     # En nuestro caso, por ejemplo:
     
-    $git checkout -b feature/<tu rama>
+    $git checkout -b feature/<tu rama> # rama para realizar push al repositorio
+    $git checkout -b dev/<tu rama> # trabajaras aqui
 
-    # Recuerda utilizar los nombres sugeridos en nuestro grupo
+    # Recuerda utilizar los nombres sugeridos en nuestro grupo.
 
 • Verifica las ramas del repositorio local y remoto
 
@@ -59,18 +59,22 @@ _Aplicación backend Secure Pass._
 
     $git checkout master
     $git fetch upstream # Para sincronizar con el repositorio remoto original
-    $git rebase upstream/master
+    $git merge upstream/master
 
     # Si quieres que tu rama feature tambien obtenga los cambios haz:
 
     $git checkout feature
-    $git rebase master  # Si ya actualizaste master (local)
+    $git merge master  # Si ya actualizaste master (local)
 
 • Sube tus cambios al repositorio remoto desde tu rama:
+    
+    # Desde tu rama dev/<mi-rama> realiza:
 
-    $git checkout feature/<mi-rama>
     $git add .
     $git commit -m "mi cambio en feature"
+    $git checkout feature/<mi-rama> # cambia a tu rama feature
+    $git merge dev/<mi-rama> # haz un merge de tu rama de trabajo a la rama feature
+    
     $git push origin feature/<tu rama>
 
     # O puedes hacer
@@ -106,11 +110,13 @@ _Aplicación backend Secure Pass._
 
 ### Subir cambios y Pull Requests
 
-• Una vez hayas trabajado en tu rama feature y desees subir los cambios de tu rama:
+• Una vez hayas trabajado en tu rama dev y desees subir los cambios de tu rama:
 
     $git status # comprueba los cambios
     $git add .
     $git commit -m "mis cambios"
+    $git checkout feature/<mi-rama>
+    $git merge dev/<mi-rama>
     $git push origin feature/<mi-rama>  # para subir los cambios al repositorio fork
 
 • Al haber hecho esto podras realizar un Pull Request (PR):
@@ -118,9 +124,6 @@ _Aplicación backend Secure Pass._
     # Desde github, ve a tu repositorio forkeado, ve a tu rama con cambios y realiza un PR (Pull Request).
     Este debería aparecer como un botón verde.
 
-    # Primero te recomiendo que realices un PR a la rama master de tu propio repositorio forkeado.
-    De esta forma puedes evitar cualquier conflicto.
-
-    # Una vez este todo libre de conflictos, desde tu rama master. Realiza un PR a la rama master
-    del repositorio original. Tus cambios serán revisados y probablemente aceptados.
+    # Una vez este todo libre de conflictos, desde tu rama. Realiza un PR a la rama master
+    del repositorio original. Tus cambios serán revisados y aceptados o rechazados.
 
