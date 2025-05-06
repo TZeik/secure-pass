@@ -11,7 +11,7 @@ router.post('/auth/login', authController.loginUser);
 router.get('/auth/me', authMiddleware, authController.getCurrentUser);
 
 // Rutas de usuarios
-router.get('/users/role/:role', authMiddleware, getUsersByRole);
-router.get('/users/residents', authMiddleware, getResidentsWithApartments);
+router.get('/users/role/:role', getUsersByRole);
+router.get('/users/residents', getResidentsWithApartments);
 
 export default router;
