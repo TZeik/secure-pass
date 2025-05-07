@@ -19,21 +19,20 @@ const router = Router();
 router.post('/visits/entry', registerEntry);
 router.put('/visits/exit/:qrId', registerExit);
 
-// Consultas de visitas
+// Consultas de visita
+router.get('/visit/:id', getVisitById);
+router.delete('/visit/:id', deleteVisit);
+router.patch('/visit/:id/status', updateVisitStatus);
+router.put('/visit/:id', updateVisit);
+router.get('/visit/qr/:qrId', getVisitByQR);
+
+// Consultas a varias visitas
 router.get('/visits', getAllVisits);
-router.get('/visits/:id', getVisitById);
-router.get('/visits/qr/:qrId', getVisitByQR);
 router.get('/visits/resident/:residenteId', getVisitsByResident);
 router.get('/visits/guard/:guardId', getVisitsByGuard);
 
 // Ruta para reportes de visitas
 router.get('/visits/report', RepVisitas);
 
-// Actualización de visitas
-router.patch('/visits/:id/status', updateVisitStatus);
-router.put('/visits/:id', updateVisit);
-
-// Eliminación de visitas
-router.delete('/visits/:id', deleteVisit);
 
 export default router;

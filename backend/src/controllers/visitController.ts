@@ -60,9 +60,7 @@ export const getVisitById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const visit = await Visit.findById(id)
-      .populate("residente", "nombre apartamento")
-      .populate("guardia", "nombre");
+    const visit = await VisitService.getVisitById(id);
     
     if (!visit) {
       res.status(404).json({ message: "Visita no encontrada" });
