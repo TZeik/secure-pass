@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
     healthcheck:
-      test: mongosh --eval "db.adminCommand('ping')" -u admin -p admin --authenticationDatabase admin
+      test: mongosh --eval "db.adminCommand('ping')" -u ${MONGO_ROOT_USER} -p ${MONGO_ROOT_PASSWORD} --authenticationDatabase admin
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,6 +24,7 @@ services:
     container_name: securepass_backend
     ports:
       - "${PORT}:${PORT}"
+    env_file: .env
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
