@@ -6,6 +6,7 @@ import visitRoutes from './routes/visitRoutes';
 import qrRoutes from './routes/qrRoutes';
 import userRoutes from './routes/userRoutes';
 
+
 const app = express();
 
 app.use(cors());
