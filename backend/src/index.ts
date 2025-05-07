@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import entryRoutes from './routes/entryRoutes';
-import RepVisitas from './routes/RepRoutes';
+import RepVisitas from './routes/repRoutes';
 import qrRoutes from './routes/qrRoutes';
 
 
