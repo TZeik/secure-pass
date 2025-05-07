@@ -11,7 +11,7 @@ import {
   getVisitsByResident,
   getVisitsByGuard
 } from "../controllers/visitController";
-import { getVisitReport } from "../controllers/repController";
+import { RepVisitas } from "../controllers/repController";
 
 const router = Router();
 
@@ -27,7 +27,7 @@ router.get('/visits/resident/:residenteId', getVisitsByResident);
 router.get('/visits/guard/:guardId', getVisitsByGuard);
 
 // Ruta para reportes de visitas
-router.get('/visits/report', getVisitReport);
+router.get('/visits/report', RepVisitas);
 
 // Actualización de visitas
 router.patch('/visits/:id/status', updateVisitStatus);
