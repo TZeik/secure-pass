@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { VisitService } from "../services/VisitService";
 import { IVisit, IVisitInput } from "../interfaces/IVisit";
 import Visit from "../models/Visit";
+import { Types } from "mongoose";
 
-export const registerEntry = async (
+export const authorizeVisit = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,14 +19,29 @@ export const registerEntry = async (
   }
 };
 
+export const registerEntry = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { qrId, guardId, note } = req.body
+    const visit = await VisitService.registerEntry(qrId as string, guardId as Types.ObjectId, note);
+    if (!visit) {
+      res.status(404).json({ message: "Visita no encontrada" });
+      return;
+    }
+    res.status(200).json({ message: "Entrada registrada con éxito", data: visit });
+  } catch (error) {
+    console.error("Error registrando entrada:", error);
+    next(error);
+  }
+};
+
 export const registerExit = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { qrId } = req.params;
-    const visit = await VisitService.registerExit(qrId);
+    const { qrId, guardId, note } = req.body
+    const visit = await VisitService.registerExit(qrId as string, guardId as Types.ObjectId, note);
     if (!visit) {
       res.status(404).json({ message: "Visita no encontrada" });
       return;
@@ -100,9 +116,9 @@ export const updateVisitStatus = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { estado } = req.query;
+    const { status } = req.query;
 
-    const updateData = {estado: estado?.toString() };
+    const updateData = {estado: status?.toString() };
     const updatedVisit = await VisitService.updateVisit(id, updateData as Partial<IVisit>);
     
     if (!updatedVisit) {

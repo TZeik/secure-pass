@@ -111,7 +111,7 @@ export class VisitService {
   static async getVisitsByGuard(
     guardId: string | Types.ObjectId
   ): Promise<IVisit[]> {
-    return await Visit.find({ 'registry.entry.guard': guardId })
+    return await Visit.find({ 'registry.entry.guard': guardId, 'registry.exit.guard': guardId })
       .sort({ 'registry.entry.date': -1 })
       .populate('authorization.resident', 'name apartment');
   }

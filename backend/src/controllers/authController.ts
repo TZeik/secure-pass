@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import 'dotenv/config'
+import 'dotenv/config';
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { IUser, IUserInput, UserRole } from "../interfaces/IUser";
+import { IUser, GuardShift } from "../interfaces/IUser";
 
 interface AuthenticatedRequest extends Request {
   user?: IUser;
@@ -10,37 +10,48 @@ interface AuthenticatedRequest extends Request {
 
 export const authController = {
   async registerUser(req: AuthenticatedRequest, res: Response): Promise<void> {
-    const { nombre, email, password, role, apartamento, torre, imagenUrl } = req.body;
+    const { name, email, password, role, apartment, tel, shift } = req.body;
 
     try {
-      if (role === UserRole.RESIDENTE && (!apartamento || !torre)) {
+      // Validaciones específicas por rol
+      if (role === 'residente' && (!apartment || !tel)) {
         res.status(400).json({ 
-          error: "Apartamento y torre son requeridos para residentes" 
+          error: "Apartamento y teléfono son requeridos para residentes" 
         });
         return;
       }
 
-      const userData: IUserInput = {
-        nombre,
-        email,
-        password,
+      if (role === 'guardia' && !shift) {
+        res.status(400).json({ 
+          error: "Turno es requerido para guardias" 
+        });
+        return;
+      }
+
+      const userData = {
+        auth: { email, password },
+        name,
         role,
-        apartamento,
-        torre,
-        imagenUrl
+        ...(role === 'residente' && { apartment, tel }),
+        ...(role === 'guardia' && { shift }),
+        ...(role === 'admin' && { lastAccess: new Date() })
       };
 
-      const user = await UserService.createUser(userData);
+      const user = await UserService.createUser(userData as IUser);
       
       const userResponse = {
         _id: user._id,
-        nombre: user.nombre,
-        email: user.email,
+        name: user.name,
+        email: user.auth.email,
         role: user.role,
-        apartamento: user.apartamento,
-        torre: user.torre,
-        imagenUrl: user.imagenUrl,
-        fechaRegistro: user.fechaRegistro
+        ...(user.role === 'residente' && { 
+          apartment: user.apartment,
+          tel: user.tel 
+        }),
+        ...(user.role === 'guardia' && { 
+          shift: user.shift 
+        }),
+        registerDate: user.registerDate
       };
 
       res.status(201).json({ 
@@ -76,7 +87,7 @@ export const authController = {
         { 
           id: user._id, 
           role: user.role,
-          email: user.email
+          email: user.auth.email
         }, 
         `${process.env.JWT_SECRET}`,
         { expiresIn: "1h" }
@@ -84,12 +95,17 @@ export const authController = {
 
       const userResponse = {
         _id: user._id,
-        nombre: user.nombre,
-        email: user.email,
+        name: user.name,
+        email: user.auth.email,
         role: user.role,
-        apartamento: user.apartamento,
-        torre: user.torre,
-        imagenUrl: user.imagenUrl
+        ...(user.role === 'residente' && { 
+          apartment: user.apartment,
+          tel: user.tel 
+        }),
+        ...(user.role === 'guardia' && { 
+          shift: user.shift 
+        }),
+        registerDate: user.registerDate
       };
 
       res.status(200).json({ 
@@ -111,13 +127,18 @@ export const authController = {
   
       const userResponse = {
         _id: req.user._id,
-        nombre: req.user.nombre,
-        email: req.user.email,
+        name: req.user.name,
+        email: req.user.auth.email,
         role: req.user.role,
-        apartamento: req.user.apartamento,
-        torre: req.user.torre,
-        imagenUrl: req.user.imagenUrl,
-        fechaRegistro: req.user.fechaRegistro
+        ...(req.user.role === 'residente' && { 
+          apartment: req.user.apartment,
+          tel: req.user.tel 
+        }),
+        ...(req.user.role === 'guardia' && { 
+          shift: req.user.shift 
+        }),
+        registerDate: req.user.registerDate,
+        updateDate: req.user.updateDate
       };
   
       res.status(200).json(userResponse);

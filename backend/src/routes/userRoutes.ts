@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getUsersByRole, getResidentsWithApartments } from '../controllers/userController';
 import { authController } from '../controllers/authController';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import { userController } from '../controllers/userController';
 
 const router = Router();
 
@@ -11,7 +11,11 @@ router.post('/auth/login', authController.loginUser);
 router.get('/auth/me', authMiddleware, authController.getCurrentUser);
 
 // Rutas de usuarios
-router.get('/users/role/:role', getUsersByRole);
-router.get('/users/residents', getResidentsWithApartments);
+router.get('/residents', userController.getResidents);
+router.get('/guards', userController.getGuards);
+router.get('/admins', userController.getAdmins);
+router.get('/users', userController.getAllUsers);
+router.put('/users/:id', userController.updateUser);
+router.delete('/users/:id', userController.deleteUser);
 
 export default router;

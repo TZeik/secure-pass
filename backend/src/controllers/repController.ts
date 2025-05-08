@@ -40,14 +40,14 @@ export const RepVisitas = async (
         res.status(404).json({ message: "No se encontraron visitas." });
         return;
       }
-      const VDataset = viewVisitas.map((visit) => ({
-        "Visitante": visit.nombreVisitante,
-        "Numero Documento": visit.documentoVisitante,
-        "Codigo Entrada": visit.qrId,
-        "Estado Solcitud": visit.estado,
-        "Motivo Entrada": visit.motivo,
-        "Fecha Autorizado": visit.fechaAutorizacion,
-        "Fecha Entrada": visit.fechaEntrada,
+      const VDataset = viewVisitas.map((v) => ({
+        "Visitante": v.visit.name,
+        "Numero Documento": v.visit.document,
+        "Codigo Entrada": v.qrId,
+        "Estado Solcitud": v.authorization.state,
+        "Motivo Entrada": v.authorization.reason,
+        "Fecha Autorizado": v.authorization.date,
+        "Fecha Entrada": v.registry?.entry,
       }));
       //res.status(200).json(viewVisitas);
       res.status(200).json(VDataset);

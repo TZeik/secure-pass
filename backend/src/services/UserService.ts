@@ -28,6 +28,13 @@ export class UserService {
     return await User.find({ role }).select('-auth.password').exec();
   }
 
+  static async getAllUsers(): Promise<IUser[]> {
+    return await User.find()
+      .select('-auth.password')
+      .sort({ registerDate: -1 })
+      .exec();
+  }
+
   static async updateUser(
     id: string | Types.ObjectId,
     updateData: Partial<Omit<IUser, '_id' | 'comparePassword'> & {

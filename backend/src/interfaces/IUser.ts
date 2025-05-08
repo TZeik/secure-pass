@@ -33,7 +33,7 @@ export interface Guard extends BaseUser {
 
 export interface Admin extends BaseUser {
   role: 'admin';
-  lastAcess: Date; // Fecha de último logout del admin (O vencimiento de Token)
+  lastAccess: Date; // Fecha de último logout del admin (O vencimiento de Token)
 }
 
 export type IUser = Resident | Guard | Admin;
