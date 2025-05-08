@@ -1,23 +1,39 @@
 import { Document, Types } from 'mongoose';
 
-export enum UserRole {
-  RESIDENTE = 'residente',
-  GUARDIA = 'guardia',
-  ADMIN = 'admin',
+export enum GuardShift {
+  MORNING = 'mañana',
+  AFTERNOON = 'tarde',
+  NIGHT = 'noche'
 }
 
-export interface IUserInput {
-  nombre: string;
-  email: string;
-  password: string;
-  role: UserRole;
-  imagenUrl?: string; // URL de Cloudinary
-  apartamento?: string;
-  torre?: string;
+interface IUserInput {
+  auth: {
+    email: string; // Email del usuario
+    password: string; // Contraseña del usuario
+  };
+  name: string; // Nombre real del usuario
+  registerDate: Date; // Fecha de registro del usuario
+  updateDate: Date; // Fecha en la que se le realizó el último cambio
 }
 
-export interface IUser extends IUserInput, Document {
-  _id: Types.ObjectId;
-  fechaRegistro: Date;
+interface BaseUser extends IUserInput, Document {
+  _id: Types.ObjectId; // Id del usuario
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
+export interface Resident extends BaseUser {
+  role: 'residente';
+  apartment: string; // Apartamento del residente (ex: A-2)
+  tel: string; // Teléfono del residente (ex: +18095559999)
+}
+
+export interface Guard extends BaseUser {
+  role: 'guardia';
+  shift: GuardShift; // Turno del guardia (ver enum)
+}
+
+export interface Admin extends BaseUser {
+  role: 'admin';
+  lastAcess: Date; // Fecha de último logout del admin (O vencimiento de Token)
+}
+
+export type IUser = Resident | Guard | Admin;

@@ -1,61 +1,112 @@
 import mongoose, { Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUser, UserRole } from "../interfaces/IUser";
+import { IUser, GuardShift } from "../interfaces/IUser";
 
+const userSchema: Schema = new mongoose.Schema(
+  {
+    auth: {
+      email: {
+        type: String,
+        required: [true, "El email es requerido"],
+        unique: true,
+        match: [/^\S+@\S+\.\S+$/, "Email inválido"],
+        index: true,
+      },
+      password: {
+        type: String,
+        required: [true, "La contraseña es requerida"],
+        minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
+        select: false,
+      },
+    },
+    name: {
+      type: String,
+      required: [true, "El nombre es requerido"],
+      trim: true,
+    },
+    registerDate: {
+      type: Date,
+      default: Date.now,
+    },
+    updateDate: {
+      type: Date,
+      default: Date.now,
+    },
 
-const userSchema: Schema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: [true, "El nombre es requerido"],
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [/^\S+@\S+\.\S+$/, "Email inválido"],
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
-  },
-  role: {
-    type: String,
-    enum: Object.values(UserRole),
-    required: true,
-  },
-  imagenUrl: {
-    type: String,
-  },
-  apartamento: {
-    type: String,
-    required: function (this: IUser) {
-      return this.role === UserRole.RESIDENTE;
+    role: {
+      type: String,
+      enum: ["residente", "guardia", "admin"],
+      required: [true, "El rol es requerido"],
+    },
+
+    // Campos específicos de residente
+    apartment: {
+      type: String,
+      required: function (this: { role: string }) {
+        return this.role === "residente";
+      },
+    },
+    tel: {
+      type: String,
+      required: function (this: { role: string }) {
+        return this.role === "residente";
+      },
+      validate: {
+        validator: (v: string) => /^\+?[\d\s-]{7,}$/.test(v),
+        message: "Número de teléfono inválido",
+      },
+    },
+    // Campos específicos de guardia
+    shift: {
+      type: String,
+      enum: Object.values(GuardShift),
+      required: function (this: { role: string }) {
+        return this.role === "guardia";
+      },
+    },
+    // Campos específicos de admin
+    lastAccess: {
+      type: Date,
+      required: function (this: { role: string }) {
+        return this.role === "admin";
+      },
+      default: Date.now,
     },
   },
-  torre: {
-    type: String,
-    required: function (this: IUser) {
-      return this.role === UserRole.RESIDENTE;
+  {
+    timestamps: false,
+    toJSON: {
+      virtuals: true,
+      transform: function (doc, ret) {
+        delete ret.auth;
+        delete ret.__v;
+        ret.id = ret._id;
+        delete ret._id;
+      },
     },
-  },
-  fechaRegistro: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  }
+);
 
+// Middleware para hashear la contraseña antes de guardar
 userSchema.pre<IUser>("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("auth.password")) return next();
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.auth.password = await bcrypt.hash(this.auth.password, salt);
+    this.updateDate = new Date();
+    next();
+  } catch (err: any) {
+    next(err);
+  }
 });
 
-// comparacion de contraseñas
-userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
+// Método para comparar contraseñas
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(candidatePassword, this.auth.password);
 };
 
 export const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
+export default User;
