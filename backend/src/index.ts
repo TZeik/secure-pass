@@ -3,7 +3,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import visitRoutes from './routes/visitRoutes';
-import qrRoutes from './routes/qrRoutes';
 import userRoutes from './routes/userRoutes';
 
 
@@ -19,7 +18,7 @@ mongoose.connect(MONGODB_URI)
     .then(() => console.log('Se ha realizado la conexión con MongoDB Atlas'))
     .catch((err: Error) => console.error('Error al conectar a MongoDB Atlas: ', err));
 
-app.use('/api', visitRoutes,  userRoutes, qrRoutes);
+app.use('/api', visitRoutes,  userRoutes);
 
 app.get('/', (req, res) => {
     res.send('SecurePass API');

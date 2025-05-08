@@ -34,7 +34,7 @@ export interface IVisitInput {
       note?: string; // Nota por parte del guardia
     };
   };
-  qrId: string; // QR ID generado al autorizar visita
+  qrId?: string; // QR ID generado al autorizar visita
 }
 
 export interface IVisit extends IVisitInput, Document {

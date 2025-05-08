@@ -45,6 +45,10 @@ const userSchema: Schema = new mongoose.Schema(
       required: function (this: { role: string }) {
         return this.role === "residente";
       },
+      validate: {
+        validator: (v: string) => /^[A-Za-z]-\d{1,3}$/.test(v),
+        message: "Formato de Apartamento no válido (Ejemplo: 'A-1' )",
+      },
     },
     tel: {
       type: String,
@@ -52,8 +56,8 @@ const userSchema: Schema = new mongoose.Schema(
         return this.role === "residente";
       },
       validate: {
-        validator: (v: string) => /^\+?[\d\s-]{7,}$/.test(v),
-        message: "Número de teléfono inválido",
+        validator: (v: string) => /^\+\d{1,4}-\d{3}-\d{4}$/.test(v),
+        message: "Número de teléfono inválido (Ejemplo: '+1809-000-0000') ",
       },
     },
     // Campos específicos de guardia

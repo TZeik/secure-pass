@@ -1,55 +1,40 @@
 import { Router } from "express";
-import { 
-  registerEntry,
-  registerExit,
-  getAllVisits,
-  getVisitById,
-  getVisitByQR,
-  updateVisitStatus,
-  updateVisit,
-  deleteVisit,
-  getVisitsByResident,
-  getVisitsByGuard,
-  authorizeVisit
-} from "../controllers/visitController";
+import { visitController } from "../controllers/visitController";
 import { RepVisitas } from "../controllers/repController";
 
 const router = Router();
 
 // Realiza una consulta de todas las visitass
-router.get('/visits', getAllVisits);
+router.get('/visits', visitController.getAllVisits);
 
 // Genera un reporte de visitas (Admin)
 router.get('/visits/report', RepVisitas);
 
 // Autoriza [crea] una visita (Residente)
-router.post('/visits/authorize', authorizeVisit);
+router.post('/visits/authorize', visitController.authorizeVisit);
 
 // Registra y valida la entrada de una visita (Guardia)
-router.put('/visits/entry', registerEntry);
+router.put('/visits/entry', visitController.registerEntry);
 
 // Registra y valida la salida de una visita (Guardia)
-router.put('/visits/exit', registerExit);
+router.put('/visits/exit', visitController.registerExit);
 
 // Realiza una consulta una visita por su QR ID
-router.get('/visits/qr/:qrId', getVisitByQR);
+router.get('/visits/qr/:qrId', visitController.getVisitByQR);
 
 // Realiza una consulta de todas las visitas de un residente
-router.get('/visits/resident/:residenteId', getVisitsByResident);
+router.get('/visits/resident/:residentId', visitController.getVisitsByResident);
 
 // Realiza una consulta de todas las visitas registradas por un guardia
-router.get('/visits/guard/:guardId', getVisitsByGuard);
+router.get('/visits/guard/:guardId', visitController.getVisitsByGuard);
 
 // Realiza una consulta de una visita por su id
-router.get('/visits/:id', getVisitById);
+router.get('/visits/:id', visitController.getVisitById);
 
 // Elimina a una visita por su id
-router.delete('/visits/:id', deleteVisit);
+router.delete('/visits/:id', visitController.deleteVisit);
 
 // Cambia el estado de una visita por su id
-router.patch('/visits/:id', updateVisitStatus);
-
-// Actualiza a una visita por su id
-router.put('/visits/:id', updateVisit);
+router.patch('/visits/:id', visitController.updateVisitStatus);
 
 export default router;

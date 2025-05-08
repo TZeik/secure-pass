@@ -1,9 +1,9 @@
 import { Document, Types } from 'mongoose';
 
 export enum GuardShift {
-  MORNING = 'mañana',
-  AFTERNOON = 'tarde',
-  NIGHT = 'noche'
+  MORNING = 'matutina',
+  AFTERNOON = 'vespertina',
+  NIGHT = 'nocturna'
 }
 
 interface IUserInput {

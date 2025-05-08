@@ -66,8 +66,10 @@ export class UserService {
     ).exec();
   }
 
-  static async deleteUser(id: string | Types.ObjectId): Promise<void> {
+  static async deleteUser(id: string | Types.ObjectId): Promise<IUser | null> {
+    const user = await User.findById(id).exec();
     await User.findByIdAndDelete(id).exec();
+    return user;
   }
 
   static async comparePasswords(

@@ -153,7 +153,20 @@ export const userController = {
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await UserService.deleteUser(id);
+      const deletedUser = await UserService.deleteUser(id);
+
+      if (!deletedUser) {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+        return;
+       }
+
+      const user = {
+        _id: deletedUser._id,
+        name: deletedUser.name,
+        email: deletedUser.auth.email,
+        role: deletedUser.role,
+      }
+      res.json({message: 'Usuario eliminado correctamente', user});
       res.status(204).send();
     } catch (error) {
       next(error);
