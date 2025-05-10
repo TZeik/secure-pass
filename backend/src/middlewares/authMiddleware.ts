@@ -45,7 +45,8 @@ export const roleMiddleware = (requiredRoles: string[]) => {
     const user = req.user;
     
     if (!user || !requiredRoles.includes(user.role)) {
-      return res.status(403).json({ error: 'Acceso no autorizado' });
+      res.status(403).json({ error: 'Acceso no autorizado' });
+      return;
     }
     
     next();
