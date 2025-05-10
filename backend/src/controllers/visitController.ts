@@ -31,7 +31,8 @@ export const visitController = {
   async registerEntry (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { qrId, guardId, note } = req.body
-      const visit = await VisitService.registerEntry(qrId as string, guardId as Types.ObjectId, note);
+      const { status } = req.query
+      const visit = await VisitService.registerEntry(qrId as string, guardId as Types.ObjectId, status as VisitState, note);
       if (!visit) {
         res.status(404).json({ message: "Visita no encontrada" });
         return;

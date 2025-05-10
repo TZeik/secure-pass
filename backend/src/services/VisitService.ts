@@ -31,10 +31,15 @@ export class VisitService {
   static async registerEntry(
     qrId: string,
     guardId: Types.ObjectId,
+    status: VisitState,
     note?: string
   ): Promise<IVisit | null> {
     const visit = await Visit.findOne({ qrId });
     if (!visit) throw new Error("Visita no encontrada");
+
+    // Verificar que la visita tiene un estado válido para ser registrada
+    if (visit.authorization.state !== VisitState.PENDING)
+      throw new Error("La visita no está pendiente para registrar entrada");
 
     // Verificar que el guardia existe
     const guard = await UserService.findById(guardId);
@@ -42,15 +47,22 @@ export class VisitService {
       throw new Error("Guardia no válido");
     }
 
+    const validState = (value: string) : boolean => {
+      return Object.values(VisitState).includes(value as VisitState)
+    };
+    
+    if(!validState(status)) throw new Error("Estado introducido no válido");
+
     return await Visit.findByIdAndUpdate(
       visit._id,
       {
+        'authorization.state': status,
+
         'registry.entry': {
           guard: guardId,
           date: new Date(),
-          note
+          note: note? note : undefined
         },
-        'authorization.state': VisitState.APPROVED
       },
       { new: true }
     ).populate('authorization.resident', 'name apartment');
@@ -100,9 +112,7 @@ export class VisitService {
     return await Visit.findByIdAndUpdate(
       visitId,
       {
-        'authorization': {
-          state: newState
-        }
+        'authorization.state': newState
       },
       {new: true }
     ).populate('authorization.resident', 'name apartment');
