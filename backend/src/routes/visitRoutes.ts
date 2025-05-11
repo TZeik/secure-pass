@@ -13,6 +13,9 @@ router.get('/visits/report', RepVisitas);
 // Autoriza [crea] una visita (Residente)
 router.post('/visits/authorize', visitController.authorizeVisit);
 
+// Envia un Email de confirmación al residente autorizador sobre la autorización de visita
+router.post('/visits/notify/:id', visitController.notifyVisit);
+
 // Registra y valida la entrada de una visita (Guardia)
 router.put('/visits/entry', visitController.registerEntry);
 

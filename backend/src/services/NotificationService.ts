@@ -1,53 +1,94 @@
-import nodemailer from 'nodemailer';
-import { env } from '../config/env';
+import nodemailer from "nodemailer";
+import { env } from "../config/env";
+import { IVisit } from "../interfaces/IVisit";
+import { UserService } from "./UserService";
+import { IUser } from "../interfaces/IUser";
 
 class NotificationService {
-    public transporter;
+  public transporter;
 
-    constructor() {
-      this.transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: env.EMAIL_USER,
-          pass: env.EMAIL_PASSWORD,
-        },
-      });
-    }
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASSWORD,
+      },
+    });
+  }
 
   async sendVisitNotification(
-    to: string,
-    visitData: {
-      nombreVisitante: string;
-      documento: string;
-      motivo: string;
-      qrId: string;
-      tipo: 'entrada' | 'salida';
-      fecha: Date;
-    }
-  ): Promise<nodemailer.SentMessageInfo> {
-    const { nombreVisitante, documento, motivo, qrId, tipo, fecha } = visitData;
+    toResident: string,
+    toVisit: string,
+    visitData: IVisit
+  ): Promise<nodemailer.SentMessageInfo[]> {
+    const residentData = (await UserService.findById(
+      visitData.authorization.resident
+    )) as IUser;
 
-    const mailOptions = {
+    const residentMailOptions = {
       from: `${process.env.EMAIL_FROM}`,
       sender: process.env.EMAIL_SENDER,
       replyTo: process.env.EMAIL_REPLY,
-      to,
-      subject: `Registro de ${tipo} de visitante`,
+      to: toResident,
+      subject: `Autorización de visitante ${visitData.visit.name}`,
       html: `
-        <h1>Notificación de ${tipo}</h1>
-        <p><strong>Visitante:</strong> ${nombreVisitante}</p>
-        <p><strong>Documento:</strong> ${documento}</p>
-        <p><strong>Motivo:</strong> ${motivo}</p>
-        <p><strong>Fecha:</strong> ${fecha.toLocaleString()}</p>
-        <p><strong>Código QR:</strong> ${qrId}</p>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrId}" alt="QR"/>
-        <p><small>Este es un mensaje automático, no responda.</small></p>
+        <h1>Notificación de Autorización de Visitante</h1>
+        <p>Estimado, ${residentData.name} su autorización de visita a ${
+        visitData.visit.name
+      } ha sido registrada<p>
+        <p><strong>Visitante:</strong> ${visitData.visit.name}</p>
+        <p><strong>Documento de Indentidad:</strong> ${
+          visitData.visit.document
+        }</p>
+        <p><strong>Motivo de Visita:</strong> ${
+          visitData.authorization.reason
+        }</p>
+        <p><strong>Fecha de autorización:</strong> ${visitData.authorization.date.toLocaleString()}</p>
+        <p><strong>Fecha de expiración:</strong> ${visitData.authorization.exp.toLocaleString()}</p>
+        <img style="text-align: center;" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${
+          visitData.qrId
+        }" alt="QR"/>
+        <p><small>Tu visitante debe utilizar este QR para registrar su entrada y salida del recinto</small><p>
+        <br/><p><small>Este es un mensaje automático, no responder.</small></p>
       `,
     };
 
-    return await this.transporter.sendMail(mailOptions);
-  }
+    const visitMailOptions = {
+      from: `${process.env.EMAIL_FROM}`,
+      sender: process.env.EMAIL_SENDER,
+      replyTo: process.env.EMAIL_REPLY,
+      to: toVisit,
+      subject: `Autorización de visitante ${visitData.visit.name}`,
+      html: `
+        <h1>Notificación de Autorización de Visitante</h1>
+        <p>Estimado, ${
+          visitData.visit.name
+        }. Usted su visita ha sido autorizada por ${residentData.name}<p>
+        <p><strong>Visitante:</strong> ${visitData.visit.name}</p>
+        <p><strong>Documento de Indentidad:</strong> ${
+          visitData.visit.document
+        }</p>
+        <p><strong>Motivo de Visita:</strong> ${
+          visitData.authorization.reason
+        }</p>
+        <p><strong>Fecha de autorización:</strong> ${visitData.authorization.date.toLocaleString()}</p>
+        <p><strong>Fecha de expiración:</strong> ${visitData.authorization.exp.toLocaleString()}</p>
+        <img style="text-align: center;" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${
+          visitData.qrId
+        }" alt="QR"/>
+        <p><small>Usted debe utilizar este QR para registrar su entrada y salida del recinto</small><p>
+        <br/><p><small>Este es un mensaje automático, no responder.</small></p>
+      `,
+    };
 
+    const emailInfo: nodemailer.SentMessageInfo[] = [
+      await this.transporter.sendMail(residentMailOptions),
+      await this.transporter.sendMail(visitMailOptions),
+    ];
+
+    return emailInfo;
+  }
 }
 
 export const notificationService = new NotificationService();
