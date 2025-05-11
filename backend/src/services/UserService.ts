@@ -1,14 +1,18 @@
 import { User } from "../models/User";
 import { IUser, GuardShift, Resident, Guard } from "../interfaces/IUser";
 import { Types } from "mongoose";
+import { flattenObject } from "../types/express.types";
 
 export class UserService {
   static async createUser(userData: IUser): Promise<IUser> {
-    if (userData.role === 'residente' && (!userData.apartment || !userData.tel)) {
+    if (
+      userData.role === "residente" &&
+      (!userData.apartment || !userData.tel)
+    ) {
       throw new Error("Apartamento y teléfono son requeridos para residentes");
     }
 
-    if (userData.role === 'guardia' && !userData.shift) {
+    if (userData.role === "guardia" && !userData.shift) {
       throw new Error("Turno es requerido para guardias");
     }
 
@@ -17,51 +21,71 @@ export class UserService {
   }
 
   static async findByEmail(email: string): Promise<IUser | null> {
-    return await User.findOne({ 'auth.email': email }).select('+auth.password').exec();
+    return await User.findOne({ "auth.email": email })
+      .select("+auth.password")
+      .exec();
   }
 
   static async findById(id: string | Types.ObjectId): Promise<IUser | null> {
     return await User.findById(id).exec();
   }
 
-  static async getUsersByRole(role: 'residente' | 'guardia' | 'admin'): Promise<IUser[]> {
-    return await User.find({ role }).select('-auth.password').exec();
+  static async getUsersByRole(
+    role: "residente" | "guardia" | "admin"
+  ): Promise<IUser[]> {
+    return await User.find({ role }).select("-auth.password").exec();
   }
 
   static async getAllUsers(): Promise<IUser[]> {
     return await User.find()
-      .select('-auth.password')
+      .select("-auth.password")
       .sort({ registerDate: -1 })
       .exec();
   }
 
   static async updateUser(
     id: string | Types.ObjectId,
-    updateData: Partial<Omit<IUser, '_id' | 'comparePassword'> & {
-      auth?: { email?: string; password?: string };
-    }>
+    updateData: Partial<
+      Omit<IUser, "_id" | "comparePassword"> & {
+        auth?: { email?: string; password?: string };
+      }
+    >
   ): Promise<IUser | null> {
     // Verificación para residente
-    if (updateData.role === 'residente' || 
-       (updateData.role === undefined && 
-        (updateData as Resident).apartment !== undefined)) {
-      if (!(updateData as Resident).apartment || !(updateData as Resident).tel) {
-        throw new Error("Apartamento y teléfono son requeridos para residentes");
+    if (
+      updateData.role === "residente" ||
+      (updateData.role === undefined &&
+        (updateData as Resident).apartment !== undefined)
+    ) {
+      if (
+        !(updateData as Resident).apartment ||
+        !(updateData as Resident).tel
+      ) {
+        throw new Error(
+          "Apartamento y teléfono son requeridos para residentes"
+        );
       }
     }
-  
+
     // Verificación para guardia
-    if (updateData.role === 'guardia' || 
-       (updateData.role === undefined && 
-        (updateData as Guard).shift !== undefined)) {
+    if (
+      updateData.role === "guardia" ||
+      (updateData.role === undefined &&
+        (updateData as Guard).shift !== undefined)
+    ) {
       if (!(updateData as Guard).shift) {
         throw new Error("Turno es requerido para guardias");
       }
     }
-  
+
+    const flattenedUpdate = flattenObject({
+      ...updateData,
+      updateDate: new Date(),
+    });
+
     return await User.findByIdAndUpdate(
-      id, 
-      { ...updateData, updateDate: new Date() }, 
+      id,
+      { $set: flattenedUpdate },
       { new: true }
     ).exec();
   }
@@ -76,7 +100,7 @@ export class UserService {
     userId: string | Types.ObjectId,
     candidatePassword: string
   ): Promise<boolean> {
-    const user = await User.findById(userId).select('+auth.password').exec();
+    const user = await User.findById(userId).select("+auth.password").exec();
     if (!user) throw new Error("Usuario no encontrado");
     return await user.comparePassword(candidatePassword);
   }
@@ -86,8 +110,10 @@ export class UserService {
     newPassword: string
   ): Promise<void> {
     await User.findByIdAndUpdate(userId, {
-      'auth.password': newPassword,
-      updateDate: new Date()
+      $set: {
+        "auth.password": newPassword,
+        updateDate: new Date(),
+      },
     }).exec();
   }
 }

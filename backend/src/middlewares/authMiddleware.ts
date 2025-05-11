@@ -1,16 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/UserService';
-import { IUser } from '../interfaces/IUser';
-
-// payload del token
-interface JwtPayload {
-  id: string;
-}
-
-interface AuthenticatedRequest extends Request {
-  user?: IUser;
-}
+import { AuthenticatedRequest } from '../types/auth.types';
 
 export const authMiddleware = async (
   req: AuthenticatedRequest,
