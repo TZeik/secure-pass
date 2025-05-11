@@ -11,6 +11,7 @@ export enum VisitState {
   export interface IVisitInput {
   visit: {
     name: string; // Nombre del visitante
+    email: string; // Dirección email del visitante
     document: string; // Cédula o pasaporte de la visita
     visitImage?: string; // Url de imagen de la visita
     vehicleImage?: string; // Url de imagen del vehículo de la visita

@@ -11,6 +11,13 @@ const visitSchema: Schema = new mongoose.Schema(
         trim: true,
         maxlength: [100, "El nombre no puede exceder 100 caracteres"],
       },
+      email: {
+        type: String,
+        required: [true, "El email es requerido"],
+        unique: true,
+        match: [/^\S+@\S+\.\S+$/, "Email inválido"],
+        index: true,
+      },
       document: {
         type: String,
         required: [true, "El documento de identidad es obligatorio"],

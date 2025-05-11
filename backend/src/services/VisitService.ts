@@ -4,28 +4,30 @@ import { Types } from "mongoose";
 import { UserService } from "./UserService";
 
 export class VisitService {
-  
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
     // Verificar que el residente existe y es residente
-    const resident = await UserService.findById(visitData.authorization.resident);
-    if (!resident || resident.role !== 'residente') {
+    const resident = await UserService.findById(
+      visitData.authorization.resident
+    );
+    if (!resident || resident.role !== "residente") {
       throw new Error("Residente no válido");
     }
 
     // Por defecto la visita expirará en 15 días
-    let e = new Date(); e.setDate(e.getDate() + 15);
-        
+    let e = new Date();
+    e.setDate(e.getDate() + 15);
+
     // Crear la visita con estado inicial
 
     const visit = await Visit.create({
       ...visitData,
       qrId: this.generateQRId(),
-      'authorization.state': VisitState.PENDING,
-      'authorization.date': new Date(),
-      'authorization.exp': e
+      "authorization.state": VisitState.PENDING,
+      "authorization.date": new Date(),
+      "authorization.exp": e,
     });
 
-    return visit.populate('authorization.resident', 'name apartment');
+    return visit.populate("authorization.resident", "name apartment");
   }
 
   static async registerEntry(
@@ -43,29 +45,31 @@ export class VisitService {
 
     // Verificar que el guardia existe
     const guard = await UserService.findById(guardId);
-    if (!guard || guard.role !== 'guardia') {
+    if (!guard || guard.role !== "guardia") {
       throw new Error("Guardia no válido");
     }
 
-    const validState = (value: string) : boolean => {
-      return Object.values(VisitState).includes(value as VisitState)
+    const validState = (value: string): boolean => {
+      return Object.values(VisitState).includes(value as VisitState);
     };
-    
-    if(!validState(status)) throw new Error("Estado introducido no válido");
+
+    if (!validState(status)) throw new Error("Estado introducido no válido");
 
     return await Visit.findByIdAndUpdate(
       visit._id,
       {
-        'authorization.state': status,
+        $set: {
+          "authorization.state": status,
 
-        'registry.entry': {
-          guard: guardId,
-          date: new Date(),
-          note: note? note : undefined
+          "registry.entry": {
+            guard: guardId,
+            date: new Date(),
+            note: note ? note : undefined,
+          },
         },
       },
       { new: true }
-    ).populate('authorization.resident', 'name apartment');
+    ).populate("authorization.resident", "name apartment");
   }
 
   static async registerExit(
@@ -81,49 +85,52 @@ export class VisitService {
 
     // Verificar que el guardia existe
     const guard = await UserService.findById(guardId);
-    if (!guard || guard.role !== 'guardia') {
+    if (!guard || guard.role !== "guardia") {
       throw new Error("Guardia no válido");
     }
 
     return await Visit.findByIdAndUpdate(
       visit._id,
       {
-        'registry.exit': {
-          guard: guardId,
-          date: new Date(),
-          note
+        $set: {
+          "registry.exit": {
+            guard: guardId,
+            date: new Date(),
+            note,
+          },
+          "authorization.state": VisitState.COMPLETE,
         },
-        'authorization.state': VisitState.COMPLETE
       },
       { new: true }
-    ).populate('authorization.resident', 'name apartment');
+    ).populate("authorization.resident", "name apartment");
   }
 
   static async updateVisitStatus(
-    visitId : Types.ObjectId | string,
-    newState : VisitState,
+    visitId: Types.ObjectId | string,
+    newState: VisitState
   ): Promise<IVisit | null> {
-
-    if(!Object.values(VisitState).includes(newState as VisitState))
+    if (!Object.values(VisitState).includes(newState as VisitState))
       throw new Error(
-    'El estado no es válido. Estados válidos: (pendiente, aprobada, rechazada, finalizada, expirada)'
-  );
+        "El estado no es válido. Estados válidos: (pendiente, aprobada, rechazada, finalizada, expirada)"
+      );
 
     return await Visit.findByIdAndUpdate(
       visitId,
       {
-        'authorization.state': newState
+        $set: {
+          "authorization.state": newState,
+        },
       },
-      {new: true }
-    ).populate('authorization.resident', 'name apartment');
+      { new: true }
+    ).populate("authorization.resident", "name apartment");
   }
 
   static async getVisitsByResident(
     residentId: string | Types.ObjectId
   ): Promise<IVisit[]> {
-    return await Visit.find({ 'authorization.resident': residentId })
-      .sort({ 'authorization.date': -1 })
-      .populate('authorization.resident', 'name apartment');
+    return await Visit.find({ "authorization.resident": residentId })
+      .sort({ "authorization.date": -1 })
+      .populate("authorization.resident", "name apartment");
   }
 
   static async getVisitsByGuard(
@@ -131,17 +138,17 @@ export class VisitService {
   ): Promise<IVisit[]> {
     return await Visit.find({
       $or: [
-        { 'registry.entry.guard': guardId },
-        { 'registry.exit.guard': guardId }
-      ]
+        { "registry.entry.guard": guardId },
+        { "registry.exit.guard": guardId },
+      ],
     })
-    .sort({ 
-      'registry.entry.date': -1,
-      'registry.exit.date': -1 
-    })
-    .populate('authorization.resident', 'name apartment')
-    .populate('registry.entry.guard', 'name')
-    .populate('registry.exit.guard', 'name');
+      .sort({
+        "registry.entry.date": -1,
+        "registry.exit.date": -1,
+      })
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name");
   }
 
   static async deleteVisit(visitId: string | Types.ObjectId): Promise<void> {
@@ -150,34 +157,36 @@ export class VisitService {
 
   static async getAllVisits(): Promise<IVisit[]> {
     return await Visit.find()
-      .populate('authorization.resident', 'name apartment')
-      .populate('registry.entry.guard', 'name')
-      .populate('registry.exit.guard', 'name')
-      .sort({ 'authorization.date': -1 });
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name")
+      .sort({ "authorization.date": -1 });
   }
-  
-  static async getVisitById(visitId: string | Types.ObjectId): Promise<IVisit | null> {
+
+  static async getVisitById(
+    visitId: string | Types.ObjectId
+  ): Promise<IVisit | null> {
     return await Visit.findById(visitId)
-      .populate('authorization.resident', 'name apartment')
-      .populate('registry.entry.guard', 'name')
-      .populate('registry.exit.guard', 'name');
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name");
   }
-  
+
   static async getVisitByQR(qrId: string): Promise<IVisit | null> {
     return await Visit.findOne({ qrId })
-      .populate('authorization.resident', 'name apartment')
-      .populate('registry.entry.guard', 'name')
-      .populate('registry.exit.guard', 'name');
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name");
   }
 
   static async expirePendingVisits(): Promise<number> {
     const result = await Visit.updateMany(
       {
-        'authorization.state': VisitState.PENDING,
-        'authorization.exp': { $lt: new Date() }
+        "authorization.state": VisitState.PENDING,
+        "authorization.exp": { $lt: new Date() },
       },
       {
-        'authorization.state': VisitState.EXPIRED
+        "authorization.state": VisitState.EXPIRED,
       }
     );
     return result.modifiedCount;
