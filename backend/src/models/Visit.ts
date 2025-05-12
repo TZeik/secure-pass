@@ -70,7 +70,6 @@ const visitSchema: Schema = new mongoose.Schema(
           },
           message: "La fecha de expiración debe ser futura",
         },
-        default: Date.now,
       },
       reason: {
         type: String,

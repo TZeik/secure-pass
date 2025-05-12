@@ -67,6 +67,9 @@ export class VisitService {
             note: note ? note : undefined,
           },
         },
+        $unset: {
+          "authorization.exp": 1,
+        },
       },
       { new: true }
     ).populate("authorization.resident", "name apartment");
