@@ -2,6 +2,7 @@ import { Visit } from "../models/Visit";
 import { IVisit, IVisitInput, VisitState } from "../interfaces/IVisit";
 import { Types } from "mongoose";
 import { UserService } from "./UserService";
+import { IUser } from "../interfaces/IUser";
 
 export class VisitService {
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
@@ -9,9 +10,9 @@ export class VisitService {
     const resident = await UserService.findById(
       visitData.authorization.resident
     );
-    if (!resident || resident.role !== "residente") {
-      throw new Error("Residente no válido");
-    }
+    if (!resident || resident.role == "guardia") {
+      throw new Error("Usuario no válido");
+    } 
 
     // Por defecto la visita expirará en 15 días
     let e = new Date();
