@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import { notificationService } from "../services/NotificationService";
 import { UserService } from "../services/UserService";
 import { IUser } from "../interfaces/IUser";
+import { ReportService } from "../services/ReportService";
 
 export const visitController = {
   async authorizeVisit(
@@ -227,6 +228,32 @@ export const visitController = {
         visit
       );
       res.status(201).json(notification);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+   async generateReport(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { start, end, resident, guard } = req.query;
+      const startDate = new Date(start as string);
+      const endDate = end ? new Date(end as string) : undefined;
+
+      const myResident = resident ? await UserService.findById(resident as string) : null;
+      const myGuard = guard ? await UserService.findById(guard as string) : null;
+
+      const report = await ReportService.generateReport(
+        startDate, 
+        endDate, 
+        myResident, 
+        myGuard
+      );
+      
+      res.status(200).json(report);
     } catch (error) {
       next(error);
     }

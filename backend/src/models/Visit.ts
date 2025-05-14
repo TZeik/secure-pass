@@ -14,9 +14,7 @@ const visitSchema: Schema = new mongoose.Schema(
       email: {
         type: String,
         required: [true, "El email es requerido"],
-        unique: true,
         match: [/^\S+@\S+\.\S+$/, "Email inválido"],
-        index: true,
       },
       document: {
         type: String,

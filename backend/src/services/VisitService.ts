@@ -3,6 +3,7 @@ import { IVisit, IVisitInput, VisitState } from "../interfaces/IVisit";
 import { Types } from "mongoose";
 import { UserService } from "./UserService";
 import { IUser } from "../interfaces/IUser";
+import { IReport } from "../interfaces/IReport";
 
 export class VisitService {
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
@@ -12,14 +13,25 @@ export class VisitService {
     );
     if (!resident || resident.role == "guardia") {
       throw new Error("Usuario no válido");
-    } 
+    }
+
+    // Verificar si existe una visita activa con el mismo documento
+    const existingVisit = await Visit.findOne({
+      'visit.document': visitData.visit.document,
+      'authorization.state': { 
+        $nin: [VisitState.COMPLETE, VisitState.DENIED, VisitState.EXPIRED] 
+      }
+    });
+
+    if (existingVisit) {
+      throw new Error(`Ya existe una visita activa con el documento ${visitData.visit.document}`);
+    }
 
     // Por defecto la visita expirará en 15 días
     let e = new Date();
     e.setDate(e.getDate() + 15);
 
     // Crear la visita con estado inicial
-
     const visit = await Visit.create({
       ...visitData,
       qrId: this.generateQRId(),

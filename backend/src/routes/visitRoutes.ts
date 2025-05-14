@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { visitController } from "../controllers/visitController";
-import { RepVisitas } from "../controllers/repController";
 
 const router = Router();
 
@@ -8,7 +7,7 @@ const router = Router();
 router.get('/visits', visitController.getAllVisits);
 
 // Genera un reporte de visitas (Admin)
-router.get('/visits/report', RepVisitas);
+router.get('/visits/report', visitController.generateReport);
 
 // Autoriza [crea] una visita (Residente)
 router.post('/visits/authorize', visitController.authorizeVisit);
