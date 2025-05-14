@@ -15,8 +15,12 @@ export const env = {
   MONGO_ROOT_PASSWORD: checkEnv('MONGO_ROOT_PASSWORD'),
   MONGO_DB_NAME: checkEnv('MONGO_DB_NAME'),
 
-  PORT: process.env.PORT || '5000',
+  PORT: checkEnv('PORT') || '5000',
   JWT_SECRET: checkEnv('JWT_SECRET') || 'jwtSecret',
+
+  CLOUDINARY_CLOUD_NAME: checkEnv('CLOUDINARY_CLOUD_NAME'),
+  CLOUDINARY_API_KEY: checkEnv('CLOUDINARY_API_KEY'),
+  CLOUDINARY_API_SECRET: checkEnv('CLOUDINARY_API_SECRET'),
   
   EMAIL_USER: checkEnv('EMAIL_USER'),
   EMAIL_PASSWORD: checkEnv('EMAIL_PASSWORD'),
