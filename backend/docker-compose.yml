@@ -1,10 +1,10 @@
 services:
   mongodb:
     image: mongo
-    container_name: mongodb_securepass
+    container_name: securepass_mongodb
     command: mongod --bind_ip_all
     ports:
-      - "0.0.0.0:27017:27017"
+      - "${MONGODB_PORT}:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
