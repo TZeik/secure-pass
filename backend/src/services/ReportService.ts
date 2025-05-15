@@ -352,7 +352,7 @@ export class ReportService {
   }
 
   // Funcion para calcular la hora mas frecuente
-  private static calculateMostFrequentHour(dates: Date[]): string {
+  public static calculateMostFrequentHour(dates: Date[]): string {
     if (!dates || dates.length === 0) return "N/A";
 
     const hourCounts = new Map<number, number>();
@@ -368,7 +368,7 @@ export class ReportService {
     return `${mostFrequentHour}:00 - ${mostFrequentHour + 1}:00`;
   }
 
-  private static formatDuration(milliseconds: number): string {
+  public static formatDuration(milliseconds: number): string {
     const seconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
