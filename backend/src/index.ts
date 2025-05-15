@@ -15,8 +15,8 @@ const MONGODB_URI = process.env.MONGODB_URI || '';
 const PORT = process.env.PORT || 8000;
 
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Se ha realizado la conexión con MongoDB Atlas'))
-    .catch((err: Error) => console.error('Error al conectar a MongoDB Atlas: ', err));
+    .then(() => console.log('Se ha realizado la conexión con MongoDB'))
+    .catch((err: Error) => console.error('Error al conectar a Mongo: ', err));
 
 app.use('/api', visitRoutes,  userRoutes, authRoutes);
 
