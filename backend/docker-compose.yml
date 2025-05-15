@@ -20,6 +20,7 @@ services:
       - securepass_network
 
   backend:
+    image: securepass
     build: .
     container_name: securepass_backend
     ports:
@@ -30,7 +31,7 @@ services:
       - PORT=${PORT}
       - MONGODB_URI=${MONGODB_URI}
     volumes:
-      - ./src:/app/src
+      - ./src:/backend/src
     depends_on:
       mongodb:
         condition: service_healthy
