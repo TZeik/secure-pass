@@ -17,14 +17,16 @@ export class VisitService {
 
     // Verificar si existe una visita activa con el mismo documento
     const existingVisit = await Visit.findOne({
-      'visit.document': visitData.visit.document,
-      'authorization.state': { 
-        $nin: [VisitState.COMPLETE, VisitState.DENIED, VisitState.EXPIRED] 
-      }
+      "visit.document": visitData.visit.document,
+      "authorization.state": {
+        $nin: [VisitState.COMPLETE, VisitState.DENIED, VisitState.EXPIRED],
+      },
     });
 
     if (existingVisit) {
-      throw new Error(`Ya existe una visita activa con el documento ${visitData.visit.document}`);
+      throw new Error(
+        `Ya existe una visita activa con el documento ${visitData.visit.document}`
+      );
     }
 
     // Por defecto la visita expirará en 15 días
@@ -121,6 +123,47 @@ export class VisitService {
     ).populate("authorization.resident", "name apartment");
   }
 
+  static async updateVisitImagesByDocument(
+    document: string,
+    imageUrl: string
+  ): Promise<IVisit[]> {
+    const result = await Visit.updateMany(
+      { "visit.document": document },
+      { $set: { "visit.visitImage": imageUrl } }
+    );
+
+    if (result.modifiedCount === 0) return [];
+
+    return this.getVisitsByDocument(document);
+  }
+
+  static async updateVehicleImagesByDocument(
+    document: string,
+    imageUrl: string
+  ): Promise<IVisit[]> {
+    const result = await Visit.updateMany(
+      { "visit.document": document },
+      { $set: { "visit.vehicleImage": imageUrl } }
+    );
+
+    if (result.modifiedCount === 0) return [];
+
+    return this.getVisitsByDocument(document);
+  }
+
+  static async updateAllImagesToDefault(): Promise<IVisit[]> {
+    const result = await Visit.updateMany(
+      {},
+      { $set: {
+        "visit.visitImage": "https://example.com/image.jpg",
+        "visit.vehicleImage": "https://example.com/image.jpg",
+      } }
+    );
+    if (result.modifiedCount === 0) return [];
+
+    return this.getAllLatestVisitsGroupedByDocument();
+  }
+
   static async updateVisitStatus(
     visitId: Types.ObjectId | string,
     newState: VisitState
@@ -193,6 +236,65 @@ export class VisitService {
       .populate("authorization.resident", "name apartment")
       .populate("registry.entry.guard", "name")
       .populate("registry.exit.guard", "name");
+  }
+
+  static async getVisitsByDocument(document: string): Promise<IVisit[]> {
+    return await Visit.find({ "visit.document": document })
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name");
+  }
+
+  static async getLatestVisitByDocument(
+    document: string
+  ): Promise<IVisit | null> {
+    return await Visit.findOne({ "visit.document": document })
+      .sort({ "authorization.date": -1 })
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name");
+  }
+
+  static async getAllLatestVisitsGroupedByDocument(): Promise<IVisit[]> {
+    const latestVisits = await Visit.aggregate([
+      {
+        $sort: { "authorization.date": -1 }, // Ordenamos por fecha descendente
+      },
+      {
+        $group: {
+          _id: "$visit.document", // Agrupamos por documento
+          docId: { $first: "$_id" }, // Obtenemos el ID del documento más reciente
+          visit: { $first: "$visit" }, // Obtenemos los datos de visita
+          authorization: { $first: "$authorization" }, // Obtenemos los datos de autorización
+          registry: { $first: "$registry" }, // Obtenemos los datos de registro
+          qrId: { $first: "$qrId" }, // Obtenemos el QR ID
+        },
+      },
+      {
+        $project: {
+          _id: "$docId", // Mantenemos el ID original
+          visit: 1,
+          authorization: 1,
+          registry: 1,
+          qrId: 1,
+        },
+      },
+    ]);
+
+    // Si no hay visitas, retornamos array vacío
+    if (latestVisits.length === 0) return [];
+
+    // Obtenemos los IDs de las visitas únicas
+    const visitIds = latestVisits.map((v) => v._id);
+
+    // Buscamos las visitas completas con los populate necesarios
+    const populatedVisits = await Visit.find({ _id: { $in: visitIds } })
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name")
+      .sort({ "authorization.date": -1 });
+
+    return populatedVisits;
   }
 
   static async expirePendingVisits(): Promise<number> {

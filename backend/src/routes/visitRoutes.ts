@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { visitController } from "../controllers/visitController";
+import { upload } from "../middlewares/uploadMiddleware"
 
 const router = Router();
 
@@ -29,6 +30,24 @@ router.get('/visits/resident/:residentId', visitController.getVisitsByResident);
 
 // Realiza una consulta de todas las visitas registradas por un guardia
 router.get('/visits/guard/:guardId', visitController.getVisitsByGuard);
+
+// Realiza una consulta todas las ultimas visitas por su documento unico
+router.get('/visits/document', visitController.getAllLatestVisitsGroupedByDocument);
+
+// Realiza una consulta de la ultima visita por su documento
+router.get('/visits/document/:document', visitController.getLatestVisitByDocument);
+
+// Subida de imagen de visita
+router.post('/visits/upload-visit/:document', upload.single("image"), visitController.uploadVisitImage);
+
+// Subida de imagen de vehiculo
+router.post('/visits/upload-vehicle/:document', upload.single("image"), visitController.uploadVehicleImage);
+
+// Eliminacion de todas las imagenes de cloudinary (eliminacion de folder 'visits')
+router.delete('/visits/upload', visitController.deleteAllVisitsImages)
+
+// Eliminacion de ambas imagenes (profile / vehiculo) de visita
+router.delete('/visits/upload/:document', visitController.deleteVisitImage);
 
 // Realiza una consulta de una visita por su id
 router.get('/visits/:id', visitController.getVisitById);

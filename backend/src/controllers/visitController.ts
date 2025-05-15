@@ -6,6 +6,7 @@ import { notificationService } from "../services/NotificationService";
 import { UserService } from "../services/UserService";
 import { IUser } from "../interfaces/IUser";
 import { ReportService } from "../services/ReportService";
+import { StorageService } from "../services/StorageService";
 
 export const visitController = {
   async authorizeVisit(
@@ -211,6 +212,41 @@ export const visitController = {
     }
   },
 
+  async getLatestVisitByDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { document } = req.params;
+      const visit = await VisitService.getLatestVisitByDocument(document);
+
+      if (!visit) {
+        res
+          .status(404)
+          .json({ message: "No se encontraron visitas con este documento" });
+        return;
+      }
+
+      res.status(200).json(visit);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getAllLatestVisitsGroupedByDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const visits = await VisitService.getAllLatestVisitsGroupedByDocument();
+      res.status(200).json(visits);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async notifyVisit(
     req: Request,
     res: Response,
@@ -233,7 +269,7 @@ export const visitController = {
     }
   },
 
-   async generateReport(
+  async generateReport(
     req: Request,
     res: Response,
     next: NextFunction
@@ -243,17 +279,122 @@ export const visitController = {
       const startDate = new Date(start as string);
       const endDate = end ? new Date(end as string) : undefined;
 
-      const myResident = resident ? await UserService.findById(resident as string) : null;
-      const myGuard = guard ? await UserService.findById(guard as string) : null;
+      const myResident = resident
+        ? await UserService.findById(resident as string)
+        : null;
+      const myGuard = guard
+        ? await UserService.findById(guard as string)
+        : null;
 
       const report = await ReportService.generateReport(
-        startDate, 
-        endDate, 
-        myResident, 
+        startDate,
+        endDate,
+        myResident,
         myGuard
       );
-      
+
       res.status(200).json(report);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async uploadVisitImage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { document } = req.params;
+      if (!req.file?.buffer) {
+        res.status(400).json({ message: "No se proporcionó ninguna imagen" });
+        return;
+      }
+
+      const updatedVisits = await StorageService.uploadVisitImage(
+        document,
+        req.file.buffer
+      );
+
+      if (!updatedVisits || updatedVisits.length === 0) {
+        res.status(404).json({ message: "Visita no encontrada" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Imagen de visita actualizada con éxito",
+        data: updatedVisits,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async uploadVehicleImage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { document } = req.params;
+      if (!req.file?.buffer) {
+        res.status(400).json({ message: "No se proporcionó ninguna imagen" });
+        return;
+      }
+
+      const updatedVisits = await StorageService.uploadVehicleImage(
+        document,
+        req.file.buffer
+      );
+
+      if (!updatedVisits || updatedVisits.length === 0) {
+        res.status(404).json({ message: "Visita no encontrada" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Imagen de vehículo actualizada con éxito",
+        data: updatedVisits,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async deleteVisitImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { document } = req.params;
+      const result = await StorageService.deleteVisitFolder(document);
+
+      if (!result.success) {
+        res.status(400).json(result);
+        return;
+      }
+
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async deleteAllVisitsImages(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (process.env.NODE_ENV !== "development") {
+          res.status(403).json({
+          success: false,
+          message: "Esta operación no está permitida en producción",
+        });
+        return;
+      }
+
+      const result = await StorageService.deleteAllVisits();
+
+      if (!result.success) {
+        res.status(400).json(result);
+        return;
+      }
+
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
