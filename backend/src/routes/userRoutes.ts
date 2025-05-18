@@ -10,6 +10,7 @@ router.get('/residents', userController.getResidents);
 router.get('/guards', userController.getGuards);
 router.get('/admins', userController.getAdmins);
 router.get('/users', userController.getAllUsers);
+router.get('/users/:id', userController.getUser);
 router.put('/users/:id', userController.updateUser);
 router.delete('/users/:id', userController.deleteUser);
 

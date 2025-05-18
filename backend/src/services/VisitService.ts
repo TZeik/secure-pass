@@ -1,6 +1,6 @@
 import { Visit } from "../models/Visit";
 import { IVisit, IVisitInput, VisitState } from "../interfaces/IVisit";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { UserService } from "./UserService";
 import { IUser } from "../interfaces/IUser";
 import { IReport } from "../interfaces/IReport";
@@ -154,10 +154,12 @@ export class VisitService {
   static async updateAllImagesToDefault(): Promise<IVisit[]> {
     const result = await Visit.updateMany(
       {},
-      { $set: {
-        "visit.visitImage": "https://example.com/image.jpg",
-        "visit.vehicleImage": "https://example.com/image.jpg",
-      } }
+      {
+        $set: {
+          "visit.visitImage": "https://example.com/image.jpg",
+          "visit.vehicleImage": "https://example.com/image.jpg",
+        },
+      }
     );
     if (result.modifiedCount === 0) return [];
 
@@ -257,6 +259,55 @@ export class VisitService {
 
   static async getAllLatestVisitsGroupedByDocument(): Promise<IVisit[]> {
     const latestVisits = await Visit.aggregate([
+      {
+        $sort: { "authorization.date": -1 }, // Ordenamos por fecha descendente
+      },
+      {
+        $group: {
+          _id: "$visit.document", // Agrupamos por documento
+          docId: { $first: "$_id" }, // Obtenemos el ID del documento más reciente
+          visit: { $first: "$visit" }, // Obtenemos los datos de visita
+          authorization: { $first: "$authorization" }, // Obtenemos los datos de autorización
+          registry: { $first: "$registry" }, // Obtenemos los datos de registro
+          qrId: { $first: "$qrId" }, // Obtenemos el QR ID
+        },
+      },
+      {
+        $project: {
+          _id: "$docId", // Mantenemos el ID original
+          visit: 1,
+          authorization: 1,
+          registry: 1,
+          qrId: 1,
+        },
+      },
+    ]);
+
+    // Si no hay visitas, retornamos array vacío
+    if (latestVisits.length === 0) return [];
+
+    // Obtenemos los IDs de las visitas únicas
+    const visitIds = latestVisits.map((v) => v._id);
+
+    // Buscamos las visitas completas con los populate necesarios
+    const populatedVisits = await Visit.find({ _id: { $in: visitIds } })
+      .populate("authorization.resident", "name apartment")
+      .populate("registry.entry.guard", "name")
+      .populate("registry.exit.guard", "name")
+      .sort({ "authorization.date": -1 });
+
+    return populatedVisits;
+  }
+
+  static async getVisitsByResidentGroupedByDocument(
+    residentId: string
+  ): Promise<IVisit[]> {
+    const latestVisits = await Visit.aggregate([
+      {
+        $match: {
+          "authorization.resident": new mongoose.Types.ObjectId(residentId),
+        },
+      },
       {
         $sort: { "authorization.date": -1 }, // Ordenamos por fecha descendente
       },

@@ -247,6 +247,20 @@ export const visitController = {
     }
   },
 
+  async getVisitsByResidentGroupedByDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { residentId } = req.params;
+      const visits = await VisitService.getVisitsByResidentGroupedByDocument(residentId);
+      res.status(200).json(visits);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async notifyVisit(
     req: Request,
     res: Response,
@@ -361,7 +375,11 @@ export const visitController = {
     }
   },
 
-  async deleteVisitImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async deleteVisitImage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { document } = req.params;
       const result = await StorageService.deleteVisitFolder(document);
@@ -377,10 +395,14 @@ export const visitController = {
     }
   },
 
-  async deleteAllVisitsImages(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async deleteAllVisitsImages(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (process.env.NODE_ENV !== "development") {
-          res.status(403).json({
+        res.status(403).json({
           success: false,
           message: "Esta operación no está permitida en producción",
         });

@@ -25,6 +25,9 @@ router.put('/visits/exit', visitController.registerExit);
 // Realiza una consulta una visita por su QR ID
 router.get('/visits/qr/:qrId', visitController.getVisitByQR);
 
+// Realizar una consulta de las visitas de un residente (unica por documento)
+router.get('/visits/resident/document/:residentId', visitController.getVisitsByResidentGroupedByDocument);
+
 // Realiza una consulta de todas las visitas de un residente
 router.get('/visits/resident/:residentId', visitController.getVisitsByResident);
 
