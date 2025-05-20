@@ -11,7 +11,7 @@ export class VisitService {
     const resident = await UserService.findById(
       visitData.authorization.resident
     );
-    if (!resident || resident.role == "guardia") {
+    if (!resident) {
       throw new Error("Usuario no válido");
     }
 
@@ -60,7 +60,7 @@ export class VisitService {
 
     // Verificar que el guardia existe
     const guard = await UserService.findById(guardId);
-    if (!guard || guard.role !== "guardia") {
+    if (!guard || guard.role == "residente") {
       throw new Error("Guardia no válido");
     }
 
@@ -103,7 +103,7 @@ export class VisitService {
 
     // Verificar que el guardia existe
     const guard = await UserService.findById(guardId);
-    if (!guard || guard.role !== "guardia") {
+    if (!guard || guard.role == "residente") {
       throw new Error("Guardia no válido");
     }
 
