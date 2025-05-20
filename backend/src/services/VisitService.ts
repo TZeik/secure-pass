@@ -4,6 +4,7 @@ import mongoose, { Types } from "mongoose";
 import { UserService } from "./UserService";
 import { IUser } from "../interfaces/IUser";
 import { IReport } from "../interfaces/IReport";
+import { flattenObject } from "../types/express.types";
 
 export class VisitService {
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
@@ -43,6 +44,26 @@ export class VisitService {
     });
 
     return visit.populate("authorization.resident", "name apartment");
+  }
+
+  static async updateVisitData(
+    document: string,
+    updateData: Partial<Omit<IVisitInput, "_id">>
+  ) {
+    const flattenedUpdate = flattenObject({
+      ...updateData,
+      updateDate: new Date(),
+    });
+
+    const result = await Visit.updateMany(
+      { "visit.document": document },
+      { $set: flattenedUpdate },
+      { new: true }
+    ).exec();
+
+    if (result.modifiedCount === 0) return [];
+
+    return this.getLatestVisitByDocument(document);
   }
 
   static async registerEntry(

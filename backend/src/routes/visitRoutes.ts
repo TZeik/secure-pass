@@ -61,4 +61,7 @@ router.delete('/visits/:id', visitController.deleteVisit);
 // Cambia el estado de una visita por su id
 router.patch('/visits/:id', visitController.updateVisitStatus);
 
+// Actualiza un visita por su documento (Actualiza todas las visitas con el mismo documento)
+router.put('/visits/:document', visitController.updateVisit);
+
 export default router;

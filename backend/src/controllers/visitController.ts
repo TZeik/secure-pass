@@ -143,6 +143,29 @@ export const visitController = {
     }
   },
 
+  async updateVisit(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { document } = req.params;
+      const data = req.body;
+
+      const updatedVisit = await VisitService.updateVisitData(document, data);
+      if (!updatedVisit) {
+        res.status(404).json({ message: "Visita no encontrada" });
+        return;
+      }
+
+      res
+        .status(200)
+        .json({ message: "Visita actualizada con éxito", data: updatedVisit });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async updateVisitStatus(
     req: Request,
     res: Response,
@@ -254,7 +277,9 @@ export const visitController = {
   ): Promise<void> {
     try {
       const { residentId } = req.params;
-      const visits = await VisitService.getVisitsByResidentGroupedByDocument(residentId);
+      const visits = await VisitService.getVisitsByResidentGroupedByDocument(
+        residentId
+      );
       res.status(200).json(visits);
     } catch (error) {
       next(error);
