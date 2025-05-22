@@ -56,7 +56,7 @@ const userSchema: Schema = new mongoose.Schema(
         return this.role === "residente";
       },
       validate: {
-        validator: (v: string) => /^\+\d{1,4}-\d{3}-\d{4}$/.test(v),
+        validator: (v: string) => /^\+\d{1,3}[-\s]?\d{1,4}([-\s]?\d+)*$/.test(v),
         message: "Número de teléfono inválido (Ejemplo: '+1809-000-0000') ",
       },
     },
