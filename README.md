@@ -10,10 +10,12 @@ Repositorio monorepo que contiene las tres aplicaciones del proyecto SecurePass:
 ## 🚀 Tecnologías
 
 ### Frontend Web
-- JavaScript, HTML, CSS
+- Typescript, HTML, CSS
 - React
+- Axios para conexión API
 
 ### Aplicación Móvil
+- Typescript
 - React Native + Expo
 - Axios para conexión API
 
@@ -21,9 +23,8 @@ Repositorio monorepo que contiene las tres aplicaciones del proyecto SecurePass:
 - Node.js + Express
 - MongoDB Atlas
 - Autenticación JWT
-- Cloudinary/File System (almacenamiento)
+- Cloudinary (almacenamiento)
 - Nodemailer (notificaciones por email)
-- Generación de QR (`qr-image` o `node-qrcode`)
 
 ## 👥 Roles de Usuarios
 
@@ -60,8 +61,8 @@ securepass/
 ### Opción 1: Ejecutar todas las aplicaciones simultáneamente
 
 ```bash
-# Instalar herramientas necesarias (solo primera vez)
-npm install -g concurrently
+# Instalar herramientas necesarias (en la raiz del proyecto)
+npm install
 
 # Desde la raíz del monorepo:
 npm run start:all
@@ -95,12 +96,12 @@ npx expo start --tunnel
 1. **Haz un fork** del proyecto en GitHub
 2. **Clona tu fork** localmente:
    ```bash
-   git clone https://github.com/tu-usuario/securepass.git
-   cd securepass
+   git clone https://github.com/tzeik/secure-pass.git
+   cd secure-pass
    ```
 3. **Configura el upstream**:
    ```bash
-   git remote add upstream https://github.com/original-owner/securepass.git
+   git remote add upstream https://github.com/tzeik/secure-pass.git
    ```
 4. **Crea una rama** para tu feature:
    ```bash
@@ -134,20 +135,8 @@ git push origin main
 
 ## 🌐 Configuración de Entornos
 
-**Frontend Web**:
-- Configurar `API_URL` en `apps/web/src/config.js`
-
-**Aplicación Móvil**:
-- Configurar `API_URL` en `apps/mobile/src/config.js`
-
-**Backend API**:
 - Configurar variables de entorno en `.env`:
-  ```
-  PORT=5000
-  MONGO_URI=mongodb_connection_string
-  JWT_SECRET=your_jwt_secret
-  CLOUDINARY_URL=your_cloudinary_url
-  ```
+
 
 ## 📄 Licencia
 [MIT License] - Ver archivo LICENSE para más detalles.
