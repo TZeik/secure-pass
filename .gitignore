@@ -141,10 +141,6 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
-# Node packages
-package.json
-package-lock.json
-
 # End of https://www.toptal.com/developers/gitignore/api/node
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
@@ -182,3 +178,24 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+*.env
+.env
+.env.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
